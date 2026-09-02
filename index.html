@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="si" class="dark"> <!-- මුලින්ම Dark Mode එක දාලා තියෙන්නේ -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iresh Sir - ICT</title>
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Settings (නිල් සහ කළු තේමාව) -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Dark mode එක Enable කිරීම
+            theme: {
+                extend: {
+                    colors: {
+                        primaryBlue: '#2563EB', // ලස්සන නිල් පාටක්
+                        darkBg: '#0F172A', // Dark mode එකේ කළු පසුබිම
+                        lightBg: '#F8FAFC', // Light mode එකේ පසුබිම
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Framer Motion (Animations) & React CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+
+    <!-- අපේ Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300">
+
+    <!-- Navigation Bar -->
+    <nav class="p-5 flex justify-between items-center shadow-lg bg-white dark:bg-slate-900">
+        <div class="text-2xl font-bold text-primaryBlue">
+            IRESH SIR <span class="text-slate-800 dark:text-white">ICT</span>
+        </div>
+        
+        <div class="flex gap-5 items-center">
+            <a href="#" class="hover:text-primaryBlue font-semibold transition">Home</a>
+            <a href="#" class="hover:text-primaryBlue font-semibold transition">Time Table</a>
+            <a href="#" class="hover:text-primaryBlue font-semibold transition">Past Papers</a>
+            
+            <!-- Dark/Light Mode Toggle Button -->
+            <button id="themeToggle" class="p-2 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+                🌓
+            </button>
+            
+            <!-- Login Button -->
+            <button class="bg-primaryBlue hover:bg-blue-700 text-white px-6 py-2 rounded-full font-bold transition shadow-[0_0_15px_rgba(37,99,235,0.5)]">
+                LMS Login
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section (මූලික ආකර්ෂණීය කොටස) -->
+    <header class="min-h-[80vh] flex flex-col justify-center items-center text-center p-10">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 animate-fade-in-up">
+            Master ICT with the <br> <span class="text-primaryBlue">Best in the Field</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-400 max-w-2xl mb-10">
+            A/L සහ O/L ICT විෂය ඉතාමත් සරලව, ප්‍රායෝගිකව ඉගෙන ගෙන හොඳම ප්‍රතිඵලයක් කරා යන්න.
+        </p>
+        <div class="flex gap-4">
+            <button class="bg-primaryBlue hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-bold transition transform hover:scale-105 shadow-lg">
+                Join 2026 Batch
+            </button>
+            <button class="border-2 border-primaryBlue text-primaryBlue dark:text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-primaryBlue hover:text-white transition transform hover:scale-105">
+                Explore LMS
+            </button>
+        </div>
+    </header>
+
+    <!-- අපේ Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>
