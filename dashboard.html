@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="si" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Dashboard - Iresh Sir ICT</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primaryBlue: '#2563EB', darkBg: '#0F172A', cardDark: '#1E293B' }
+                }
+            }
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <aside class="w-64 bg-white dark:bg-slate-900 shadow-lg hidden md:flex flex-col">
+            <div class="p-5 font-bold text-xl text-primaryBlue text-center border-b dark:border-slate-800">
+                LMS <span class="text-slate-800 dark:text-white">PORTAL</span>
+            </div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="#" class="block p-3 bg-primaryBlue text-white rounded-lg font-semibold">📊 My Progress</a>
+                <a href="#" class="block p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">🎥 Video Lessons</a>
+                <a href="#" class="block p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">📄 Tutes & Papers</a>
+                <a href="#" class="block p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">💳 Upload Slip</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-6 overflow-y-auto">
+            
+            <div class="flex justify-between items-center mb-8 bg-white dark:bg-cardDark p-4 rounded-xl shadow-sm">
+                <h2 class="text-2xl font-bold">Welcome back, <span class="text-primaryBlue">Student!</span> 👋</h2>
+                <a href="index.html" class="text-sm font-semibold text-slate-500 hover:text-primaryBlue">Log Out</a>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-md lg:col-span-1 border border-slate-100 dark:border-slate-800">
+                    <h3 class="text-lg font-bold mb-4">අද දවසේ වැඩ කරපු පැය ගණන</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm mb-1 text-slate-500">දිනය</label>
+                            <input type="date" id="studyDate" class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800 border-none outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1 text-slate-500">පැය ගණන</label>
+                            <input type="number" id="studyHours" placeholder="උදා: 3" class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800 border-none outline-none">
+                        </div>
+                        <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition">
+                            Save Progress
+                        </button>
+                        <p id="statusMsg" class="text-sm text-green-500 hidden text-center mt-2">Saved Successfully!</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-md lg:col-span-2 border border-slate-100 dark:border-slate-800">
+                    <h3 class="text-lg font-bold mb-4">සතියේ ප්‍රගතිය</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
