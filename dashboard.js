@@ -7,18 +7,21 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentUser = null; // ලොග් වෙලා ඉන්න ළමයාගේ විස්තර මෙතන තියාගන්නවා
 
 // 2. පිටුව Load වෙද්දි ලොග් වෙලාද බලනවා
+// checkUserSession() ඇතුළේ මේ ටික වෙනස් කරන්න
 async function checkUserSession() {
     const { data: { session }, error } = await supabaseClient.auth.getSession();
     
     if (!session) {
-        // ලොග් වෙලා නැත්නම් ආයෙත් Login පිටුවට යවනවා
         window.location.href = 'login.html';
         return;
     }
     
-    currentUser = session.user; // ලොග් වෙලා නම් User ව සේව් කරගන්නවා
+    currentUser = session.user; 
     
-    // Chart එකේ දත්ත ගන්න Function එක Call කරනවා
+    // ළමයාගේ නම සහ අලුත් ID එක Dashboard එකේ පෙන්වීම
+    document.getElementById('displayName').innerText = currentUser.user_metadata?.full_name || 'Student';
+    document.getElementById('displayStudentId').innerText = currentUser.user_metadata?.student_id || 'N/A';
+    
     fetchProgressData();
 }
 
