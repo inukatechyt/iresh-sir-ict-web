@@ -108,3 +108,78 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     await supabaseClient.auth.signOut();
     window.location.href = 'login.html'; // ලොග් අවුට් වුණාම ලොගින් පිටුවට යවනවා
 });
+
+
+// 7. Payment Slip Upload කිරීම
+document.getElementById('uploadSlipBtn').addEventListener('click', async () => {
+    if (!currentUser) return;
+
+    const paymentFor = document.getElementById('paymentFor').value;
+    const amount = document.getElementById('paymentAmount').value;
+    const fileInput = document.getElementById('slipFile');
+    const file = fileInput.files[0];
+
+    // විස්තර ඔක්කොම දීලද බලනවා
+    if (!paymentFor || !amount || !file) {
+        alert("කරුණාකර සියලුම විස්තර සහ ඡායාරූපය ඇතුළත් කරන්න.");
+        return;
+    }
+
+    const statusMsg = document.getElementById('uploadStatusMsg');
+    statusMsg.innerText = "Slip එක Upload වෙමින් පවතී... කරුණාකර රැඳී සිටින්න. ⏳";
+    statusMsg.classList.remove('hidden', 'text-green-500', 'text-red-500');
+    statusMsg.classList.add('text-primaryBlue');
+
+    try {
+        // ෆොටෝ එකට අලුත් නමක් හදනවා (ලමයාගේ ID එකයි වෙලාවයි දාලා)
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${currentUser.id}_${Date.now()}.${fileExt}`;
+
+        // Storage එකට ෆොටෝ එක Upload කිරීම
+        const { data: uploadData, error: uploadError } = await supabaseClient
+            .storage
+            .from('payment_slips')
+            .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        // Upload කරපු ෆොටෝ එකේ Public URL (ලින්ක් එක) ගැනීම
+        const { data: publicUrlData } = supabaseClient
+            .storage
+            .from('payment_slips')
+            .getPublicUrl(fileName);
+
+        const slipUrl = publicUrlData.publicUrl;
+
+        // Database එකේ 'payments' table එකට විස්තර යැවීම
+        const { error: dbError } = await supabaseClient
+            .from('payments')
+            .insert([
+                {
+                    user_id: currentUser.id,
+                    payment_for: paymentFor,
+                    amount: parseInt(amount),
+                    slip_url: slipUrl,
+                    status: 'Pending'
+                }
+            ]);
+
+        if (dbError) throw dbError;
+
+        // සියල්ල සාර්ථකයි නම් පෙන්වන පණිවිඩය
+        statusMsg.innerText = "Slip එක සාර්ථකව Upload කරන ලදී! Admin විසින් Verify කරන තෙක් රැඳී සිටින්න. ✅";
+        statusMsg.classList.remove('text-primaryBlue');
+        statusMsg.classList.add('text-green-500');
+
+        // Input Fields හිස් කිරීම
+        document.getElementById('paymentFor').value = '';
+        document.getElementById('paymentAmount').value = '';
+        fileInput.value = '';
+
+    } catch (error) {
+        console.error("Error uploading slip:", error);
+        statusMsg.innerText = "Upload කිරීම අසාර්ථකයි! නැවත උත්සාහ කරන්න. ❌";
+        statusMsg.classList.remove('text-primaryBlue');
+        statusMsg.classList.add('text-red-500');
+    }
+});
