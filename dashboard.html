@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS Dashboard - Iresh Sir ICT</title>
-    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -16,90 +16,117 @@
             }
         }
     </script>
-    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300">
 
     <div class="flex h-screen overflow-hidden">
         
-        <aside class="w-64 bg-white dark:bg-slate-900 shadow-lg hidden md:flex flex-col">
-            <div class="p-5 font-bold text-xl text-primaryBlue text-center border-b dark:border-slate-800">
-                LMS <span class="text-slate-800 dark:text-white">PORTAL</span>
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white dark:bg-cardDark border-r border-slate-200 dark:border-slate-800 flex flex-col hidden md:flex">
+            <div class="p-6">
+                <h1 class="text-2xl font-extrabold text-primaryBlue">LMS PORTAL</h1>
             </div>
-            <nav class="flex-1 p-4 space-y-2">
-                <a href="#" class="block p-3 bg-primaryBlue text-white rounded-lg font-semibold">📊 My Progress</a>
-                <a href="#" class="block p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">🎥 Video Lessons</a>
-                <a href="#" class="block p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">📄 Tutes & Papers</a>
-                <a href="#" class="block p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">💳 Upload Slip</a>
+            <nav class="flex-1 px-4 space-y-2 mt-4">
+                <a href="#" id="menuProgress" class="flex items-center px-4 py-3 bg-primaryBlue text-white rounded-lg font-semibold transition">
+                    📊 My Progress
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-semibold transition">
+                    🎥 Video Lessons
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-semibold transition">
+                    📄 Tutes & Papers
+                </a>
+                <a href="#" id="menuUpload" class="flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-semibold transition">
+                    💳 Upload Slip
+                </a>
             </nav>
         </aside>
 
-        <main class="flex-1 p-6 overflow-y-auto">
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-6 md:p-10">
             
-            <div class="flex justify-between items-center mb-8 bg-white dark:bg-cardDark p-4 rounded-xl shadow-sm">
-                <h2 class="text-2xl font-bold">Welcome back, <span id="displayName" class="text-primaryBlue">Student!</span> 👋</h2>
-    <p class="text-sm text-slate-500 mt-1 font-semibold">Student ID: <span id="displayStudentId" class="text-slate-800 dark:text-white bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded">Loading...</span></p>
-                <a href="#" id="logoutBtn" class="text-sm font-semibold text-slate-500 hover:text-primaryBlue cursor-pointer">Log Out</a>
+            <!-- Topbar -->
+            <header class="flex justify-between items-center mb-10 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold">Welcome back, <span id="displayName" class="text-primaryBlue">Student!</span> 👋</h2>
+                    <p class="text-sm text-slate-500 mt-1 font-semibold">Student ID: <span id="displayStudentId" class="text-slate-800 dark:text-white bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded">Loading...</span></p>
+                </div>
+                <a href="#" id="logoutBtn" class="text-sm font-semibold text-slate-500 hover:text-red-500 transition cursor-pointer">Log Out</a>
+            </header>
+
+            <!-- ========================================== -->
+            <!-- 1. PROGRESS SECTION -->
+            <!-- ========================================== -->
+            <div id="progressSection">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Data Entry Card -->
+                    <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-800">
+                        <h3 class="text-lg font-bold mb-4">අද දවසේ වැඩ කරපු පැය ගණන</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm mb-1 text-slate-500">දිනය</label>
+                                <input type="date" id="studyDate" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-1 text-slate-500">පැය ගණන</label>
+                                <input type="number" id="studyHours" placeholder="උදා: 4" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
+                            </div>
+                            <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow-lg mt-2">
+                                Save Progress
+                            </button>
+                            <p id="statusMsg" class="text-green-500 text-sm text-center hidden mt-2 font-semibold">Saved Successfully! ✅</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart Card -->
+                    <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-800 h-80">
+                        <h3 class="text-lg font-bold mb-4">සතියේ ප්‍රගතිය</h3>
+                        <div class="h-64 w-full">
+                            <canvas id="progressChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-md lg:col-span-1 border border-slate-100 dark:border-slate-800">
-                    <h3 class="text-lg font-bold mb-4">අද දවසේ වැඩ කරපු පැය ගණන</h3>
-                    <div class="space-y-4">
+            <!-- ========================================== -->
+            <!-- 2. UPLOAD SECTION (Hidden by default) -->
+            <!-- ========================================== -->
+            <div id="uploadSection" class="hidden">
+                <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-800 max-w-2xl">
+                    <h3 class="text-xl font-bold mb-4">Payment Slip එක Upload කරන්න 💳</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm mb-1 text-slate-500">දිනය</label>
-                            <input type="date" id="studyDate" class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800 border-none outline-none">
+                            <label class="block text-sm mb-1 text-slate-500">ගෙවීම කරන්නේ කුමක් සඳහාද?</label>
+                            <input type="text" id="paymentFor" placeholder="උදා: September Class Fee" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
                         </div>
                         <div>
-                            <label class="block text-sm mb-1 text-slate-500">පැය ගණන</label>
-                            <input type="number" id="studyHours" placeholder="උදා: 3" class="w-full p-2 rounded bg-slate-100 dark:bg-slate-800 border-none outline-none">
+                            <label class="block text-sm mb-1 text-slate-500">මුදල (රු.)</label>
+                            <input type="number" id="paymentAmount" placeholder="උදා: 2500" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
                         </div>
-                        <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition">
-                            Save Progress
-                        </button>
-                        <p id="statusMsg" class="text-sm text-green-500 hidden text-center mt-2">Saved Successfully!</p>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm mb-1 text-slate-500">Slip එකේ ඡායාරූපය තෝරන්න (Max 20MB)</label>
+                            <input type="file" id="slipFile" accept="image/*" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 outline-none">
+                        </div>
                     </div>
+                    
+                    <button id="uploadSlipBtn" class="mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg w-full md:w-auto">
+                        Slip එක Upload කරන්න
+                    </button>
+                    <p id="uploadStatusMsg" class="text-sm font-semibold hidden mt-3"></p>
                 </div>
+            </div>
 
-                <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-md lg:col-span-2 border border-slate-100 dark:border-slate-800">
-                    <h3 class="text-lg font-bold mb-4">සතියේ ප්‍රගතිය</h3>
-                    <div class="relative h-64 w-full">
-                        <canvas id="progressChart"></canvas>
-                    </div>
-                </div>
-                <!-- Payment Upload Card -->
-            <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-800 mt-6">
-                <h3 class="text-xl font-bold mb-4">Payment Slip එක Upload කරන්න 💳</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm mb-1 text-slate-500">ගෙවීම කරන්නේ කුමක් සඳහාද?</label>
-                        <input type="text" id="paymentFor" placeholder="උදා: September Class Fee" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
-                    </div>
-                    <div>
-                        <label class="block text-sm mb-1 text-slate-500">මුදල (රු.)</label>
-                        <input type="number" id="paymentAmount" placeholder="උදා: 2500" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm mb-1 text-slate-500">Slip එකේ ඡායාරූපය තෝරන්න (Max 20MB)</label>
-                        <input type="file" id="slipFile" accept="image/*" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 outline-none">
-                    </div>
-                </div>
-                
-                <button id="uploadSlipBtn" class="mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg w-full md:w-auto">
-                    Slip එක Upload කරන්න
-                </button>
-                <p id="uploadStatusMsg" class="text-sm font-semibold hidden mt-3"></p>
-            </div>
-            
-            </div>
         </main>
     </div>
-<script src="dashboard.js"></script>
+
+    <!-- Backend JS -->
+    <script src="dashboard.js"></script>
 </body>
 </html>
