@@ -16,63 +16,83 @@
             }
         }
     </script>
-    <!-- Chart.js -->
+    
+    <!-- Desktop Sidebar Toggle සඳහා අලුත් CSS -->
+    <style>
+        #logoIcon { display: none; }
+        
+        @media (min-width: 768px) {
+            /* Desktop Collapsed State (Default) */
+            .desktop-sidebar { width: 5rem !important; }
+            .desktop-sidebar .sidebar-text { display: none; }
+            .desktop-sidebar .nav-btn { justify-content: center; padding-left: 0; padding-right: 0; }
+            .desktop-sidebar #logoText { display: none; }
+            .desktop-sidebar #logoIcon { display: block; text-align: center; width: 100%; }
+
+            /* Desktop Expanded State */
+            .desktop-sidebar.is-expanded { width: 16rem !important; }
+            .desktop-sidebar.is-expanded .sidebar-text { display: block; margin-left: 1rem; }
+            .desktop-sidebar.is-expanded .nav-btn { justify-content: flex-start; padding-left: 1.25rem; padding-right: 1.25rem; }
+            .desktop-sidebar.is-expanded #logoText { display: block; }
+            .desktop-sidebar.is-expanded #logoIcon { display: none; }
+        }
+    </style>
+
+    <!-- Chart.js & Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden flex h-screen">
 
-    <!-- Mobile Overlay (Menu එක එද්දී පිටුපස අඳුරු වීමට) -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity"></div>
+    <!-- Mobile Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- Sidebar Navigation -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-cardDark border-r border-slate-200 dark:border-slate-800 transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <div class="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800">
-            <h1 class="text-2xl font-extrabold text-primaryBlue tracking-wider">LMS PORTAL</h1>
-            <!-- Close Button (Mobile) -->
-            <button id="closeSidebarBtn" class="text-slate-400 hover:text-white">
+    <!-- මෙහි desktop-sidebar යන්න අලුතින් එකතු කර ඇත -->
+    <aside id="sidebar" class="desktop-sidebar fixed md:static inset-y-0 left-0 z-50 bg-white dark:bg-cardDark border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col transform -translate-x-full md:translate-x-0 w-64">
+        
+        <div class="flex items-center justify-between md:justify-center p-5 border-b border-slate-200 dark:border-slate-800 h-[73px]">
+            <h1 id="logoText" class="text-2xl font-extrabold text-primaryBlue tracking-wider whitespace-nowrap">LMS PORTAL</h1>
+            <h1 id="logoIcon" class="text-3xl font-extrabold text-primaryBlue tracking-wider">LMS</h1>
+            <!-- Close Button (Mobile Only) -->
+            <button id="closeSidebarBtn" class="md:hidden text-slate-400 hover:text-slate-600 dark:hover:text-white ml-auto">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
-        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <a href="#" id="menu_dashboard" class="nav-btn flex items-center px-4 py-3 bg-primaryBlue text-white rounded-lg font-semibold transition">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                Dashboard
+        <nav class="flex-1 py-6 space-y-2 overflow-y-auto overflow-x-hidden">
+            <a href="#" id="menu_dashboard" class="nav-btn flex items-center p-3 mx-3 bg-primaryBlue text-white rounded-xl font-semibold transition relative" title="Dashboard">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="sidebar-text whitespace-nowrap">Dashboard</span>
             </a>
-            <a href="#" id="menu_myclass" class="nav-btn flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-semibold transition">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                My Class
+            <a href="#" id="menu_myclass" class="nav-btn flex items-center p-3 mx-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-semibold transition relative" title="My Class">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span class="sidebar-text whitespace-nowrap">My Class</span>
             </a>
-            <a href="#" id="menu_lessonstore" class="nav-btn flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-semibold transition">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                Lesson Store
+            <a href="#" id="menu_lessonstore" class="nav-btn flex items-center p-3 mx-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-semibold transition relative" title="Lesson Store">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                <span class="sidebar-text whitespace-nowrap">Lesson Store</span>
             </a>
-            <a href="#" id="menu_payments" class="nav-btn flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-semibold transition">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                Payments
+            <a href="#" id="menu_payments" class="nav-btn flex items-center p-3 mx-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-semibold transition relative" title="Payments">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                <span class="sidebar-text whitespace-nowrap">Payments</span>
             </a>
         </nav>
 
-        <div class="px-4 py-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
-            <a href="#" id="menu_profile" class="nav-btn flex items-center px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-white transition">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                Profile
+        <div class="py-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+            <a href="#" id="menu_profile" class="nav-btn flex items-center p-3 mx-3 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition" title="Profile">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <span class="sidebar-text whitespace-nowrap">Profile</span>
             </a>
-            <a href="#" id="menu_help" class="nav-btn flex items-center px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-white transition">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Help & Support
-            </a>
-            <a href="#" id="logoutBtn" class="flex items-center px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 rounded-lg transition mt-2">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                Log Out
+            <a href="#" id="menu_help" class="nav-btn flex items-center p-3 mx-3 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition" title="Help">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="sidebar-text whitespace-nowrap">Help & Support</span>
             </a>
         </div>
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col w-full h-screen">
+    <div class="flex-1 flex flex-col min-w-0 h-screen">
         
         <!-- Topbar with Hamburger Menu -->
         <header class="flex items-center justify-between p-4 bg-white dark:bg-cardDark border-b border-slate-200 dark:border-slate-800 shadow-sm z-30">
@@ -85,37 +105,29 @@
                     <h2 class="text-xl font-bold hidden sm:block">Welcome back, <span id="displayName" class="text-primaryBlue">Student!</span> 👋</h2>
                 </div>
             </div>
-            <div class="flex items-center">
+            <div class="flex items-center space-x-4">
                 <p class="text-xs sm:text-sm text-slate-500 font-semibold bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
                     ID: <span id="displayStudentId" class="text-slate-800 dark:text-white">Loading...</span>
                 </p>
+                <!-- Log Out Top Right -->
+                <a href="#" id="logoutBtn" class="text-sm font-semibold text-slate-500 hover:text-red-500 transition cursor-pointer hidden sm:block">Log Out</a>
             </div>
         </header>
 
-        <!-- Dynamic Page Content -->
+        <!-- Dynamic Page Content (පෙර තිබූ පිටු එලෙසම ඇත) -->
         <main class="flex-1 overflow-y-auto p-4 sm:p-8 bg-slate-50 dark:bg-darkBg">
             
-            <!-- 1. Dashboard Section -->
             <section id="sec_dashboard" class="page-section">
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
                         <h3 class="text-lg font-bold mb-4">අද දවසේ වැඩ කරපු පැය ගණන</h3>
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm mb-1 text-slate-500">දිනය</label>
-                                <input type="date" id="studyDate" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
-                            </div>
-                            <div>
-                                <label class="block text-sm mb-1 text-slate-500">පැය ගණන</label>
-                                <input type="number" id="studyHours" placeholder="උදා: 4" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
-                            </div>
-                            <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow-md mt-2">
-                                Save Progress
-                            </button>
+                            <div><label class="block text-sm mb-1 text-slate-500">දිනය</label><input type="date" id="studyDate" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue"></div>
+                            <div><label class="block text-sm mb-1 text-slate-500">පැය ගණන</label><input type="number" id="studyHours" placeholder="උදා: 4" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue"></div>
+                            <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow-md mt-2">Save Progress</button>
                             <p id="statusMsg" class="text-green-500 text-sm text-center hidden mt-2 font-semibold">Saved Successfully! ✅</p>
                         </div>
                     </div>
-
                     <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 h-80">
                         <h3 class="text-lg font-bold mb-4">සතියේ ප්‍රගතිය</h3>
                         <div class="h-64 w-full"><canvas id="progressChart"></canvas></div>
@@ -123,7 +135,6 @@
                 </div>
             </section>
 
-            <!-- 2. My Class Section -->
             <section id="sec_myclass" class="page-section hidden">
                 <div class="flex flex-col items-center justify-center text-center p-12 bg-white dark:bg-cardDark rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 mt-10">
                     <svg class="w-16 h-16 text-slate-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
@@ -132,11 +143,9 @@
                 </div>
             </section>
 
-            <!-- 3. Lesson Store Section -->
             <section id="sec_lessonstore" class="page-section hidden">
                 <h3 class="text-xl font-bold mb-6">පන්ති සහ නිබන්ධන (Lesson Store) 🛒</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Sample Item -->
                     <div class="bg-white dark:bg-cardDark p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primaryBlue transition shadow-sm">
                         <div class="h-32 bg-slate-200 dark:bg-slate-700 rounded-lg mb-4 flex items-center justify-center"><span class="text-slate-400">Class Image</span></div>
                         <h4 class="font-bold text-lg">2026 A/L ICT - September</h4>
@@ -146,38 +155,24 @@
                 </div>
             </section>
 
-            <!-- 4. Payments Section (අපි කලින් හදපු Upload එක) -->
             <section id="sec_payments" class="page-section hidden">
                 <div class="bg-white dark:bg-cardDark p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 max-w-2xl">
                     <h3 class="text-xl font-bold mb-4">Payment Slip එක Upload කරන්න 💳</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm mb-1 text-slate-500">ගෙවීම කරන්නේ කුමක් සඳහාද?</label>
-                            <input type="text" id="paymentFor" placeholder="උදා: September Class Fee" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
-                        </div>
-                        <div>
-                            <label class="block text-sm mb-1 text-slate-500">මුදල (රු.)</label>
-                            <input type="number" id="paymentAmount" placeholder="උදා: 2500" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm mb-1 text-slate-500">Slip එකේ ඡායාරූපය තෝරන්න (Max 20MB)</label>
-                            <input type="file" id="slipFile" accept="image/*" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 outline-none">
-                        </div>
+                        <div><label class="block text-sm mb-1 text-slate-500">ගෙවීම කරන්නේ කුමක් සඳහාද?</label><input type="text" id="paymentFor" placeholder="උදා: September Class Fee" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue"></div>
+                        <div><label class="block text-sm mb-1 text-slate-500">මුදල (රු.)</label><input type="number" id="paymentAmount" placeholder="උදා: 2500" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue"></div>
+                        <div class="md:col-span-2"><label class="block text-sm mb-1 text-slate-500">Slip එකේ ඡායාරූපය තෝරන්න (Max 20MB)</label><input type="file" id="slipFile" accept="image/*" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 outline-none"></div>
                     </div>
-                    <button id="uploadSlipBtn" class="mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-md w-full md:w-auto">
-                        Slip එක Upload කරන්න
-                    </button>
+                    <button id="uploadSlipBtn" class="mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-md w-full md:w-auto">Slip එක Upload කරන්න</button>
                     <p id="uploadStatusMsg" class="text-sm font-semibold hidden mt-3"></p>
                 </div>
             </section>
 
-            <!-- 5. Profile Section -->
             <section id="sec_profile" class="page-section hidden">
                 <h3 class="text-xl font-bold mb-6">My Profile 👤</h3>
                 <p class="text-slate-500">මෙහි ඔබගේ පාසල, දුරකථන අංකය යාවත්කාලීන කිරීමට හැකිවන පරිදි පසුව සකස් කරනු ලැබේ.</p>
             </section>
 
-            <!-- 6. Help Section -->
             <section id="sec_help" class="page-section hidden">
                 <h3 class="text-xl font-bold mb-6">Help & Support 💬</h3>
                 <p class="text-slate-500">ගැටළුවක් ඇත්නම් කරුණාකර Admin WhatsApp අංකයට පණිවිඩයක් එවන්න.</p>
@@ -186,7 +181,6 @@
         </main>
     </div>
 
-    <!-- Backend JS -->
     <script src="dashboard.js"></script>
 </body>
 </html>

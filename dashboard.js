@@ -6,7 +6,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentUser = null;
 
 // ==========================================
-// A. Sidebar & Hamburger Menu Logic
+// A. Sidebar & Hamburger Menu Logic (ALUTHTHIN WENAS KALA)
 // ==========================================
 const sidebar = document.getElementById('sidebar');
 const openBtn = document.getElementById('openSidebarBtn');
@@ -14,13 +14,19 @@ const closeBtn = document.getElementById('closeSidebarBtn');
 const overlay = document.getElementById('sidebarOverlay');
 
 function toggleSidebar() {
-    sidebar.classList.toggle('-translate-x-full');
-    overlay.classList.toggle('hidden');
+    if (window.innerWidth >= 768) {
+        // Desktop View එකේදී අයිකන් සහ Text මාරු කරනවා
+        sidebar.classList.toggle('is-expanded');
+    } else {
+        // Phone View එකේදී පැත්තෙන් එළියට එනවා
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+    }
 }
+
 openBtn.addEventListener('click', toggleSidebar);
 closeBtn.addEventListener('click', toggleSidebar);
 overlay.addEventListener('click', toggleSidebar);
-
 
 // ==========================================
 // B. Dynamic Page Navigation Logic
@@ -53,7 +59,7 @@ navLinks.forEach(link => {
         // ක්ලික් කරපු Page එක පෙන්වනවා
         document.getElementById(link.secId).classList.remove('hidden');
         
-        // ක්ලික් කරපු Button එක නිල් පාට කරනවා (Profile/Help වලට නැත)
+        // ක්ලික් කරපු Button එක නිල් පාට කරනවා
         if(link.btnId !== 'menu_profile' && link.btnId !== 'menu_help') {
             button.classList.add('bg-primaryBlue', 'text-white');
             button.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
