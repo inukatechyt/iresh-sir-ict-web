@@ -17,7 +17,7 @@ function showMessage(message, isError = false) {
     }
 }
 
-// 2. Sign Up (ලියාපදිංචි වීම)
+// Sign Up (ලියාපදිංචි වීම) කොටස පමණක් මේ විදිහට වෙනස් කරන්න
 document.getElementById('signupBtn').addEventListener('click', async () => {
     const name = document.getElementById('signupName').value;
     const email = document.getElementById('signupEmail').value;
@@ -35,27 +35,32 @@ document.getElementById('signupBtn').addEventListener('click', async () => {
 
     showMessage("ගිණුම සාදමින් පවතී...", false);
 
+    // අලුත් Student ID එකක් හැදීම (උදා: IRESHDICT582910)
+    const randomNum = Math.floor(100000 + Math.random() * 900000);
+    const newStudentId = "IRESHDICT" + randomNum;
+
     // Supabase Auth හරහා ගිණුම සෑදීම
     const { data, error } = await supabaseClient.auth.signUp({
         email: email,
         password: password,
         options: {
-            data: { full_name: name } // නම දත්ත ගබඩාවට එකතු කිරීම
+            data: { 
+                full_name: name,
+                student_id: newStudentId // අලුත් ID එක සේව් කිරීම
+            }
         }
     });
 
     if (error) {
         showMessage(error.message, true);
     } else {
-        showMessage("ගිණුම සාර්ථකව සෑදුවා! කරුණාකර ලොග් වන්න.", false);
+        showMessage(`ගිණුම සාර්ථකයි! ඔබේ ID එක: ${newStudentId}`, false);
         
-        // Input fields හිස් කිරීම
         document.getElementById('signupName').value = '';
         document.getElementById('signupEmail').value = '';
         document.getElementById('signupPassword').value = '';
         
-        // තත්පර 2කින් ස්වයංක්‍රීයව Login Form එකට මාරු කිරීම
-        setTimeout(() => toggleForms(), 2000); 
+        setTimeout(() => toggleForms(), 3000); 
     }
 });
 
