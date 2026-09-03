@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="si" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Iresh Sir ICT</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primaryBlue: '#2563EB', darkBg: '#0F172A', cardDark: '#1E293B' }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Login/Signup Card -->
+    <div class="bg-white dark:bg-cardDark p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+        
+        <!-- Decoration -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-primaryBlue"></div>
+
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-primaryBlue mb-2">LMS PORTAL</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm" id="formTitle">කරුණාකර පද්ධතියට පිවිසෙන්න</p>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="space-y-5">
+            <div>
+                <label class="block text-sm font-semibold mb-1">විද්‍යුත් තැපෑල (Email)</label>
+                <input type="email" id="loginEmail" placeholder="student@example.com" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue transition">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">මුරපදය (Password)</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue transition">
+            </div>
+            <button id="loginBtn" class="w-full bg-primaryBlue hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow-lg mt-4">
+                ලොග් වන්න (Log In)
+            </button>
+            <p class="text-center text-sm text-slate-500 mt-4">
+                ගිණුමක් නැද්ද? <button onclick="toggleForms()" class="text-primaryBlue hover:underline font-bold">ලියාපදිංචි වන්න</button>
+            </p>
+        </div>
+
+        <!-- Sign Up Form (මුලින් සඟවා ඇත) -->
+        <div id="signupForm" class="space-y-5 hidden">
+            <div>
+                <label class="block text-sm font-semibold mb-1">ඔබේ නම (Name)</label>
+                <input type="text" id="signupName" placeholder="උදා: Inuka Sanjula" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue transition">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">විද්‍යුත් තැපෑල (Email)</label>
+                <input type="email" id="signupEmail" placeholder="student@example.com" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue transition">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">මුරපදය (Password)</label>
+                <input type="password" id="signupPassword" placeholder="අවම වශයෙන් අකුරු 6ක්" class="w-full p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primaryBlue transition">
+            </div>
+            <button id="signupBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition shadow-lg mt-4">
+                ගිණුම සාදන්න (Sign Up)
+            </button>
+            <p class="text-center text-sm text-slate-500 mt-4">
+                දැනටමත් ගිණුමක් තිබේද? <button onclick="toggleForms()" class="text-primaryBlue hover:underline font-bold">ලොග් වන්න</button>
+            </p>
+        </div>
+
+        <!-- Error/Success Message පෙන්වන තැන -->
+        <p id="authMessage" class="text-center text-sm mt-4 hidden font-semibold"></p>
+
+    </div>
+
+    <!-- UI එකේ Forms මාරු කරන JS කෝඩ් එක -->
+    <script>
+        function toggleForms() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const formTitle = document.getElementById('formTitle');
+            const authMessage = document.getElementById('authMessage');
+
+            authMessage.classList.add('hidden'); // පරණ මැසේජ් මකනවා
+
+            if (loginForm.classList.contains('hidden')) {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                formTitle.innerText = "කරුණාකර පද්ධතියට පිවිසෙන්න";
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                formTitle.innerText = "නව ගිණුමක් සාදන්න";
+            }
+        }
+    </script>
+    
+    <!-- Backend එකට සම්බන්ධ කරන JS ෆයිල් එක -->
+    <script src="login.js"></script>
+</body>
+</html>
