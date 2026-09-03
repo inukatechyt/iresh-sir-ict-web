@@ -184,3 +184,101 @@ document.getElementById('uploadSlipBtn').addEventListener('click', async () => {
         statusMsg.className = "text-sm font-semibold mt-3 text-red-500";
     }
 });
+
+// ==========================================
+// H. Profile Management Logic
+// ==========================================
+
+// 1. Load Data to Profile Fields
+async function loadProfileData() {
+    if (!currentUser) return;
+    
+    // Auth එකෙන් එන ඊමේල් එක සහ ID එක සෙට් කිරීම
+    document.getElementById('profEmail').value = currentUser.email;
+    document.getElementById('profTopId').innerText = currentUser.user_metadata?.student_id || 'N/A';
+    document.getElementById('profTopName').innerText = currentUser.user_metadata?.full_name || 'Student';
+
+    // DB එකේ students table එකෙන් දත්ත ගැනීම
+    const { data, error } = await supabaseClient
+        .from('students')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .single(); // එක්කෙනෙකුගේ දත්ත පමණක් නිසා single()
+
+    if (data) {
+        // දත්ත තියෙනවා නම් Form එකට පුරවනවා
+        document.getElementById('profGrade').value = data.grade || '';
+        document.getElementById('profFullName').value = data.full_name || '';
+        document.getElementById('profFirstName').value = data.first_name || '';
+        document.getElementById('profLastName').value = data.last_name || '';
+        document.getElementById('profPhone1').value = data.phone_1 || '';
+        document.getElementById('profPhone2').value = data.phone_2 || '';
+        document.getElementById('profNic').value = data.nic || '';
+        document.getElementById('profWhatsapp').value = data.whatsapp || '';
+        document.getElementById('profDob').value = data.dob || '';
+        document.getElementById('profDistrict').value = data.district || '';
+        document.getElementById('profInstitute').value = data.institute || '';
+        document.getElementById('profSchool').value = data.school || '';
+        document.getElementById('profGuardianName').value = data.guardian_name || '';
+        document.getElementById('profGuardianPhone').value = data.guardian_phone || '';
+        document.getElementById('profAddress').value = data.address || '';
+        
+        // Top Card එකේ අකුරු අප්ඩේට් කිරීම
+        if(data.grade) document.getElementById('profTopGrade').innerText = data.grade;
+        if(data.first_name) {
+            document.getElementById('profAvatarText').innerText = data.first_name.charAt(0).toUpperCase();
+        }
+    }
+}
+
+// 2. Save Profile Data
+document.getElementById('profSaveBtn').addEventListener('click', async () => {
+    if (!currentUser) return;
+
+    const statusMsg = document.getElementById('profStatusMsg');
+    statusMsg.innerText = "Saving... ⏳";
+    statusMsg.className = "font-bold text-sm text-primaryBlue mt-4";
+    statusMsg.classList.remove('hidden');
+
+    const profileData = {
+        user_id: currentUser.id,
+        student_id: currentUser.user_metadata?.student_id,
+        grade: document.getElementById('profGrade').value,
+        full_name: document.getElementById('profFullName').value,
+        first_name: document.getElementById('profFirstName').value,
+        last_name: document.getElementById('profLastName').value,
+        phone_1: document.getElementById('profPhone1').value,
+        phone_2: document.getElementById('profPhone2').value,
+        nic: document.getElementById('profNic').value,
+        whatsapp: document.getElementById('profWhatsapp').value,
+        dob: document.getElementById('profDob').value,
+        district: document.getElementById('profDistrict').value,
+        institute: document.getElementById('profInstitute').value,
+        school: document.getElementById('profSchool').value,
+        guardian_name: document.getElementById('profGuardianName').value,
+        guardian_phone: document.getElementById('profGuardianPhone').value,
+        address: document.getElementById('profAddress').value
+    };
+
+    // Upsert (දත්ත නැත්නම් අලුතින් දානවා, තියෙනවා නම් අප්ඩේට් කරනවා)
+    const { error } = await supabaseClient
+        .from('students')
+        .upsert(profileData, { onConflict: 'user_id' });
+
+    if (error) {
+        console.error(error);
+        statusMsg.innerText = "Error saving profile! ❌";
+        statusMsg.className = "font-bold text-sm text-red-500 mt-4";
+    } else {
+        statusMsg.innerText = "Profile Saved Successfully! ✅";
+        statusMsg.className = "font-bold text-sm text-green-500 mt-4";
+        
+        // Top Card එකේ Grade එක අප්ඩේට් කිරීම
+        if(profileData.grade) document.getElementById('profTopGrade').innerText = profileData.grade;
+        
+        setTimeout(() => statusMsg.classList.add('hidden'), 3000);
+    }
+});
+
+// 3. ලොග් වුණ ගමන් Profile Data Load කරන්න `checkUserSession` එක ඇතුළට කෝඩ් එක දාමු
+// (ඔයාගේ කලින් තියෙන checkUserSession function එක ඇතුළේ යටින්ම loadProfileData(); කියලා දාන්න).
