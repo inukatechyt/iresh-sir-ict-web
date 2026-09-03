@@ -227,42 +227,53 @@
             <!-- 5. Profile Section -->
             <section id="sec_profile" class="page-section hidden max-w-5xl mx-auto">
                 
-                <!-- Profile Header Card -->
-                <div class="bg-white dark:bg-cardDark p-6 md:p-8 rounded-4xl shadow-lg border border-slate-100 dark:border-slate-800/50 mb-6 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6 relative overflow-hidden">
-                    <div class="absolute -top-20 -right-20 w-64 h-64 bg-primaryBlue/5 rounded-full blur-3xl pointer-events-none"></div>
+                <style>
+                    /* Browser Autofill වෙද්දී සුදු පාට වෙන එක නැවැත්වීම */
+                    .dark input:-webkit-autofill {
+                        -webkit-box-shadow: 0 0 0 30px #1E293B inset !important;
+                        -webkit-text-fill-color: white !important;
+                    }
+                </style>
+
+                <!-- Premium Profile Header Card -->
+                <div class="bg-white dark:bg-cardDark p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
                     
-                    <!-- Avatar Upload -->
-                    <div class="relative group cursor-pointer shrink-0">
-                        <div class="w-28 h-28 rounded-3xl bg-slate-100 dark:bg-[#0f172a] border-2 border-primaryBlue flex items-center justify-center overflow-hidden relative shadow-lg">
-                            <span id="profAvatarText" class="text-4xl font-black text-primaryBlue">S</span>
-                            <img id="profAvatarImg" src="" class="hidden w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center transition-all backdrop-blur-sm">
-                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            </div>
+                    <!-- Avatar -->
+                    <div class="relative shrink-0">
+                        <div class="w-32 h-32 rounded-3xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-inner overflow-hidden">
+                            <span id="profAvatarText" class="text-5xl font-black text-primaryBlue">S</span>
                         </div>
-                        <!-- (Profile Photo Upload Logic will be added in future updates) -->
+                        <button class="absolute -bottom-3 -right-3 bg-white dark:bg-slate-700 p-2.5 rounded-full shadow-md border border-slate-200 dark:border-slate-600 hover:text-primaryBlue transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        </button>
                     </div>
 
-                    <div class="mt-2">
-                        <h2 id="profTopName" class="text-2xl font-black text-slate-800 dark:text-white mb-1">Student Name</h2>
-                        <p id="profTopId" class="text-slate-500 font-bold mb-3">IRESHDICTxxxxxx</p>
-                        <span id="profTopGrade" class="bg-primaryBlue/10 text-primaryBlue px-4 py-1.5 rounded-xl font-extrabold text-sm border border-primaryBlue/20">Grade Not Set</span>
+                    <!-- Info -->
+                    <div class="text-center md:text-left mt-2 md:mt-3 flex-1">
+                        <h2 id="profTopName" class="text-3xl font-bold text-slate-800 dark:text-white mb-2">Student Name</h2>
+                        <p id="profTopId" class="text-slate-500 font-semibold mb-4">IRESHDICTxxxxxx</p>
+                        <span id="profTopGrade" class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-lg font-bold text-sm border border-slate-200 dark:border-slate-700">Grade Not Set</span>
                     </div>
                 </div>
 
                 <!-- Form Card -->
-                <div class="bg-white dark:bg-cardDark p-6 md:p-10 rounded-4xl shadow-lg border border-slate-100 dark:border-slate-800/50">
-                    <h3 class="text-xl font-extrabold mb-8 flex items-center justify-center text-slate-700 dark:text-slate-200">
-                        <svg class="w-6 h-6 mr-3 text-primaryBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <div class="bg-white dark:bg-cardDark p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800">
+                    <h3 class="text-xl font-bold mb-8 flex items-center justify-center md:justify-start text-slate-700 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-5">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         My Profile
                     </h3>
 
+                    <!-- Inputs Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        
                         <!-- Row 1 -->
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">Email Address</label><input type="email" id="profEmail" disabled class="w-full p-4 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 outline-none text-slate-400 cursor-not-allowed"></div>
                         <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-500">Grade (Exam Year)</label>
-                            <select id="profGrade" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors appearance-none">
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Email Address</label>
+                            <input type="email" id="profEmail" disabled class="w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 outline-none text-slate-500 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Grade (Exam Year)</label>
+                            <select id="profGrade" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors appearance-none dark:text-white">
                                 <option value="">Select Grade</option>
                                 <option value="2025 A/L">2025 A/L</option>
                                 <option value="2026 A/L">2026 A/L</option>
@@ -272,46 +283,89 @@
                         </div>
 
                         <!-- Row 2 -->
-                        <div class="md:col-span-2"><label class="block text-sm font-bold mb-2 text-slate-500">Full Name</label><input type="text" id="profFullName" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Full Name</label>
+                            <input type="text" id="profFullName" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
 
                         <!-- Row 3 -->
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">First Name</label><input type="text" id="profFirstName" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">Last Name</label><input type="text" id="profLastName" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">First Name</label>
+                            <input type="text" id="profFirstName" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Last Name</label>
+                            <input type="text" id="profLastName" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
 
                         <!-- Row 4 -->
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">Phone Number 1</label><input type="tel" id="profPhone1" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">Phone Number 2</label><input type="tel" id="profPhone2" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Phone Number 1</label>
+                            <input type="tel" id="profPhone1" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Phone Number 2</label>
+                            <input type="tel" id="profPhone2" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
 
                         <!-- Row 5 -->
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">NIC Number</label><input type="text" id="profNic" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">WhatsApp Number</label><input type="tel" id="profWhatsapp" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">NIC Number</label>
+                            <input type="text" id="profNic" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">WhatsApp Number</label>
+                            <input type="tel" id="profWhatsapp" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
 
                         <!-- Row 6 -->
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">Date Of Birth</label><input type="date" id="profDob" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">District</label><input type="text" id="profDistrict" placeholder="e.g. Kurunegala" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Date Of Birth</label>
+                            <input type="date" id="profDob" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">District</label>
+                            <input type="text" id="profDistrict" placeholder="e.g. Kurunegala" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
 
                         <!-- Row 7 -->
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">Institute</label><input type="text" id="profInstitute" placeholder="e.g. Ziyon / Online" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">School Name</label><input type="text" id="profSchool" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Institute</label>
+                            <input type="text" id="profInstitute" placeholder="e.g. Ziyon / Online" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">School Name</label>
+                            <input type="text" id="profSchool" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
 
                         <!-- Row 8 (Guardians) -->
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">Guardian's Name</label><input type="text" id="profGuardianName" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">Guardian's Phone</label><input type="tel" id="profGuardianPhone" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Guardian's Name</label>
+                            <input type="text" id="profGuardianName" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Guardian's Phone</label>
+                            <input type="tel" id="profGuardianPhone" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
 
                         <!-- Row 9 -->
-                        <div class="md:col-span-2"><label class="block text-sm font-bold mb-2 text-slate-500">Home Address</label><input type="text" id="profAddress" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Home Address</label>
+                            <input type="text" id="profAddress" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
+                        </div>
                     </div>
 
-                    <div class="flex items-center justify-end mt-10 space-x-4 border-t border-slate-200 dark:border-slate-800/50 pt-6">
+                    <div class="flex items-center justify-end mt-10 space-x-4 border-t border-slate-100 dark:border-slate-800 pt-6">
                         <p id="profStatusMsg" class="font-bold text-sm hidden"></p>
-                        <button id="profSaveBtn" class="bg-primaryBlue hover:bg-blue-600 text-white font-black py-4 px-10 rounded-2xl transition shadow-lg hover:shadow-primaryBlue/30">
+                        <!-- Cancel බොත්තම සහ Save බොත්තම -->
+                        <button class="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition">Cancel</button>
+                        <button id="profSaveBtn" class="bg-primaryBlue hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl transition shadow-md">
                             Save Profile
                         </button>
                     </div>
                 </div>
 
             </section>
-
             <section id="sec_help" class="page-section hidden">
                 <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-lg border border-slate-100 dark:border-slate-800 max-w-3xl">
                     <h3 class="text-xl font-extrabold mb-6">Help & Support 💬</h3>

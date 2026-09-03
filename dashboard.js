@@ -69,7 +69,7 @@ navLinks.forEach(link => {
 
 // ==========================================
 // C. Authentication & User Session
-// ==========================================
+// =========================================
 async function checkUserSession() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
@@ -77,17 +77,15 @@ async function checkUserSession() {
         return;
     }
     currentUser = session.user; 
+    
+    // Topbar Update
     document.getElementById('displayName').innerText = currentUser.user_metadata?.full_name || 'Student';
     document.getElementById('displayStudentId').innerText = currentUser.user_metadata?.student_id || 'N/A';
+    
+    // Data Fetch Functions
     fetchProgressData();
+    loadProfileData(); // මේ පේළියෙන් තමයි Profile එකේ දත්ත අදින්නේ!
 }
-checkUserSession();
-
-document.getElementById('logoutBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
-    await supabaseClient.auth.signOut();
-    window.location.href = 'login.html';
-});
 
 
 // ==========================================
