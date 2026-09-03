@@ -1,4 +1,4 @@
-// 1. Supabase සම්බන්ධ කිරීම (ඔබේ විස්තර මෙතැනට දාන්න)
+// 1. Supabase සම්බන්ධ කිරීම
 const SUPABASE_URL = 'https://ercowsldngxxzpvpevxa.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVyY293c2xkbmd4eHpwdnBldnhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNjA1NjksImV4cCI6MjEwMzkzNjU2OX0.BGFibu7_xRZUl9c2rkH3KA-y0kJsm8iCA2YLtnRwn9o';
 
@@ -6,7 +6,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentUser = null;
 
 // ==========================================
-// A. Sidebar & Hamburger Menu Logic (ALUTHTHIN WENAS KALA)
+// A. Sidebar & Hamburger Menu Logic
 // ==========================================
 const sidebar = document.getElementById('sidebar');
 const openBtn = document.getElementById('openSidebarBtn');
@@ -15,10 +15,8 @@ const overlay = document.getElementById('sidebarOverlay');
 
 function toggleSidebar() {
     if (window.innerWidth >= 768) {
-        // Desktop View එකේදී අයිකන් සහ Text මාරු කරනවා
         sidebar.classList.toggle('is-expanded');
     } else {
-        // Phone View එකේදී පැත්තෙන් එළියට එනවා
         sidebar.classList.toggle('-translate-x-full');
         overlay.classList.toggle('hidden');
     }
@@ -29,7 +27,7 @@ closeBtn.addEventListener('click', toggleSidebar);
 overlay.addEventListener('click', toggleSidebar);
 
 // ==========================================
-// B. Dynamic Page Navigation Logic (අලුත් Premium ක්‍රමය)
+// B. Dynamic Page Navigation Logic
 // ==========================================
 const navLinks = [
     { btnId: 'menu_dashboard', secId: 'sec_dashboard' },
@@ -42,72 +40,70 @@ const navLinks = [
 
 navLinks.forEach(link => {
     const button = document.getElementById(link.btnId);
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // 1. අනිත් ඔක්කොම Pages හංගනවා
-        document.querySelectorAll('.page-section').forEach(sec => sec.classList.add('hidden'));
-        
-        // 2. අනිත් ඔක්කොම Buttons වල Active ගතිය අයින් කරනවා
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active', 'bg-primaryBlue/10', 'text-primaryBlue', 'font-bold');
-            btn.classList.add('text-slate-500', 'font-semibold');
+    if(button) {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-primaryBlue/10', 'text-primaryBlue', 'font-bold');
+                btn.classList.add('text-slate-500', 'font-semibold');
+            });
+
+            document.getElementById(link.secId).classList.remove('hidden');
+            button.classList.add('active', 'bg-primaryBlue/10', 'text-primaryBlue', 'font-bold');
+            button.classList.remove('text-slate-500', 'font-semibold');
+
+            if (window.innerWidth < 768) toggleSidebar();
         });
-
-        // 3. ක්ලික් කරපු Page එක පෙන්වනවා
-        document.getElementById(link.secId).classList.remove('hidden');
-        
-        // 4. ක්ලික් කරපු Button එකට විතරක් Active ගතිය (නිල් ඉර සහ Background) දෙනවා
-        button.classList.add('active', 'bg-primaryBlue/10', 'text-primaryBlue', 'font-bold');
-        button.classList.remove('text-slate-500', 'font-semibold');
-
-        // ෆෝන් එකෙන් බලද්දී මෙනු එකක් එබුවම ස්වයංක්‍රීයව Sidebar එක වැහෙනවා
-        if (window.innerWidth < 768) toggleSidebar();
-    });
+    }
 });
 
 
 // ==========================================
 // C. Authentication & User Session
-// =========================================
+// ==========================================
 async function checkUserSession() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    
+    if (error || !session) {
         window.location.href = 'login.html';
         return;
     }
+    
     currentUser = session.user; 
     
-    // Topbar Update
+    // Topbar Update (මෙතනින් තමයි උඩ බාර් එකට නමයි ID එකයි එන්නේ)
     document.getElementById('displayName').innerText = currentUser.user_metadata?.full_name || 'Student';
     document.getElementById('displayStudentId').innerText = currentUser.user_metadata?.student_id || 'N/A';
     
-    // Data Fetch Functions
+    // දත්ත අදින Functions කෝල් කිරීම
     fetchProgressData();
-    loadProfileData(); // මේ පේළියෙන් තමයි Profile එකේ දත්ත අදින්නේ!
+    loadProfileData(); // Profile දත්ත අදින්නේ මෙතනින්!
 }
 
+checkUserSession();
 
-// ==========================================
-// D. Chart.js Setup
-// ==========================================
-const ctx = document.getElementById('progressChart').getContext('2d');
-let progressChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: [], 
-        datasets: [{
-            label: 'වැඩ කළ පැය ගණන', data: [], backgroundColor: '#2563EB', borderRadius: 5
-        }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, suggestedMax: 10 } } }
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await supabaseClient.auth.signOut();
+    window.location.href = 'login.html';
 });
 
 
 // ==========================================
-// E. Save Progress Data
+// D. Chart Setup & Progress Logic
 // ==========================================
-document.getElementById('saveDataBtn').addEventListener('click', async () => {
+const ctx = document.getElementById('progressChart')?.getContext('2d');
+let progressChart = null;
+if(ctx) {
+    progressChart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: [], datasets: [{ label: 'වැඩ කළ පැය ගණන', data: [], backgroundColor: '#3B82F6', borderRadius: 5 }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, suggestedMax: 10 } } }
+    });
+}
+
+document.getElementById('saveDataBtn')?.addEventListener('click', async () => {
     if (!currentUser) return;
     const dateInput = document.getElementById('studyDate').value;
     const hoursInput = document.getElementById('studyHours').value;
@@ -128,26 +124,22 @@ document.getElementById('saveDataBtn').addEventListener('click', async () => {
     }
 });
 
-
-// ==========================================
-// F. Fetch Progress Data
-// ==========================================
 async function fetchProgressData() {
-    if (!currentUser) return;
+    if (!currentUser || !progressChart) return;
     const { data, error } = await supabaseClient.from('study_progress')
         .select('date, hours').eq('user_id', currentUser.id).order('date', { ascending: true }).limit(7);
 
-    if (error) return console.error(error);
-    progressChart.data.labels = data.map(r => r.date);
-    progressChart.data.datasets[0].data = data.map(r => r.hours);
-    progressChart.update();
+    if (!error && data) {
+        progressChart.data.labels = data.map(r => r.date);
+        progressChart.data.datasets[0].data = data.map(r => r.hours);
+        progressChart.update();
+    }
 }
 
-
 // ==========================================
-// G. Payment Slip Upload
+// E. Payment Slip Upload
 // ==========================================
-document.getElementById('uploadSlipBtn').addEventListener('click', async () => {
+document.getElementById('uploadSlipBtn')?.addEventListener('click', async () => {
     if (!currentUser) return;
     const paymentFor = document.getElementById('paymentFor').value;
     const amount = document.getElementById('paymentAmount').value;
@@ -157,7 +149,7 @@ document.getElementById('uploadSlipBtn').addEventListener('click', async () => {
 
     const statusMsg = document.getElementById('uploadStatusMsg');
     statusMsg.innerText = "Upload වෙමින් පවතී... ⏳";
-    statusMsg.className = "text-sm font-semibold mt-3 text-primaryBlue";
+    statusMsg.className = "text-sm font-bold mt-4 text-primaryBlue block";
 
     try {
         const fileName = `${currentUser.id}_${Date.now()}.${file.name.split('.').pop()}`;
@@ -172,39 +164,44 @@ document.getElementById('uploadSlipBtn').addEventListener('click', async () => {
         if (dbError) throw dbError;
 
         statusMsg.innerText = "සාර්ථකව Upload කරන ලදී! ✅";
-        statusMsg.className = "text-sm font-semibold mt-3 text-green-500";
+        statusMsg.className = "text-sm font-bold mt-4 text-green-500 block";
         document.getElementById('paymentFor').value = '';
         document.getElementById('paymentAmount').value = '';
         document.getElementById('slipFile').value = '';
 
     } catch (error) {
         statusMsg.innerText = "Upload කිරීම අසාර්ථකයි! ❌";
-        statusMsg.className = "text-sm font-semibold mt-3 text-red-500";
+        statusMsg.className = "text-sm font-bold mt-4 text-red-500 block";
     }
 });
 
-// ==========================================
-// H. Profile Management Logic
-// ==========================================
 
-// 1. Load Data to Profile Fields
+// ==========================================
+// F. Profile Management Logic
+// ==========================================
 async function loadProfileData() {
     if (!currentUser) return;
+
+    // 1. Auth Data සෙට් කිරීම (මේක අනිවාර්යයෙන් වැඩ කරන්න ඕනේ)
+    const emailField = document.getElementById('profEmail');
+    if(emailField) emailField.value = currentUser.email || '';
     
-    // Auth එකෙන් එන ඊමේල් එක සහ ID එක සෙට් කිරීම
-    document.getElementById('profEmail').value = currentUser.email;
     document.getElementById('profTopId').innerText = currentUser.user_metadata?.student_id || 'N/A';
     document.getElementById('profTopName').innerText = currentUser.user_metadata?.full_name || 'Student';
 
-    // DB එකේ students table එකෙන් දත්ත ගැනීම
+    // 2. Database එකෙන් දත්ත ගැනීම (maybeSingle මගින් අලුත් අයට එන error එක නවත්තනවා)
     const { data, error } = await supabaseClient
         .from('students')
         .select('*')
         .eq('user_id', currentUser.id)
-        .single(); // එක්කෙනෙකුගේ දත්ත පමණක් නිසා single()
+        .maybeSingle(); 
+
+    if (error) {
+        console.error("Profile load error:", error);
+        return;
+    }
 
     if (data) {
-        // දත්ත තියෙනවා නම් Form එකට පුරවනවා
         document.getElementById('profGrade').value = data.grade || '';
         document.getElementById('profFullName').value = data.full_name || '';
         document.getElementById('profFirstName').value = data.first_name || '';
@@ -221,7 +218,6 @@ async function loadProfileData() {
         document.getElementById('profGuardianPhone').value = data.guardian_phone || '';
         document.getElementById('profAddress').value = data.address || '';
         
-        // Top Card එකේ අකුරු අප්ඩේට් කිරීම
         if(data.grade) document.getElementById('profTopGrade').innerText = data.grade;
         if(data.first_name) {
             document.getElementById('profAvatarText').innerText = data.first_name.charAt(0).toUpperCase();
@@ -229,14 +225,12 @@ async function loadProfileData() {
     }
 }
 
-// 2. Save Profile Data
-document.getElementById('profSaveBtn').addEventListener('click', async () => {
+document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
     if (!currentUser) return;
 
     const statusMsg = document.getElementById('profStatusMsg');
     statusMsg.innerText = "Saving... ⏳";
-    statusMsg.className = "font-bold text-sm text-primaryBlue mt-4";
-    statusMsg.classList.remove('hidden');
+    statusMsg.className = "font-bold text-sm text-primaryBlue block";
 
     const profileData = {
         user_id: currentUser.id,
@@ -258,7 +252,6 @@ document.getElementById('profSaveBtn').addEventListener('click', async () => {
         address: document.getElementById('profAddress').value
     };
 
-    // Upsert (දත්ත නැත්නම් අලුතින් දානවා, තියෙනවා නම් අප්ඩේට් කරනවා)
     const { error } = await supabaseClient
         .from('students')
         .upsert(profileData, { onConflict: 'user_id' });
@@ -266,17 +259,14 @@ document.getElementById('profSaveBtn').addEventListener('click', async () => {
     if (error) {
         console.error(error);
         statusMsg.innerText = "Error saving profile! ❌";
-        statusMsg.className = "font-bold text-sm text-red-500 mt-4";
+        statusMsg.className = "font-bold text-sm text-red-500 block";
     } else {
         statusMsg.innerText = "Profile Saved Successfully! ✅";
-        statusMsg.className = "font-bold text-sm text-green-500 mt-4";
+        statusMsg.className = "font-bold text-sm text-green-500 block";
         
-        // Top Card එකේ Grade එක අප්ඩේට් කිරීම
         if(profileData.grade) document.getElementById('profTopGrade').innerText = profileData.grade;
+        if(profileData.first_name) document.getElementById('profAvatarText').innerText = profileData.first_name.charAt(0).toUpperCase();
         
-        setTimeout(() => statusMsg.classList.add('hidden'), 3000);
+        setTimeout(() => { statusMsg.classList.add('hidden'); }, 3000);
     }
 });
-
-// 3. ලොග් වුණ ගමන් Profile Data Load කරන්න `checkUserSession` එක ඇතුළට කෝඩ් එක දාමු
-// (ඔයාගේ කලින් තියෙන checkUserSession function එක ඇතුළේ යටින්ම loadProfileData(); කියලා දාන්න).
