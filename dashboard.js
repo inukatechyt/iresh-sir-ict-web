@@ -29,7 +29,7 @@ closeBtn.addEventListener('click', toggleSidebar);
 overlay.addEventListener('click', toggleSidebar);
 
 // ==========================================
-// B. Dynamic Page Navigation Logic
+// B. Dynamic Page Navigation Logic (අලුත් Premium ක්‍රමය)
 // ==========================================
 const navLinks = [
     { btnId: 'menu_dashboard', secId: 'sec_dashboard' },
@@ -45,25 +45,21 @@ navLinks.forEach(link => {
     button.addEventListener('click', (e) => {
         e.preventDefault();
         
-        // අනිත් ඔක්කොම Pages හංගනවා
+        // 1. අනිත් ඔක්කොම Pages හංගනවා
         document.querySelectorAll('.page-section').forEach(sec => sec.classList.add('hidden'));
         
-        // අනිත් ඔක්කොම Buttons වල පාට සාමාන්‍ය කරනවා
+        // 2. අනිත් ඔක්කොම Buttons වල Active ගතිය අයින් කරනවා
         document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('bg-primaryBlue', 'text-white');
-            if(btn.id !== 'menu_profile' && btn.id !== 'menu_help') {
-                btn.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
-            }
+            btn.classList.remove('active', 'bg-primaryBlue/10', 'text-primaryBlue', 'font-bold');
+            btn.classList.add('text-slate-500', 'font-semibold');
         });
 
-        // ක්ලික් කරපු Page එක පෙන්වනවා
+        // 3. ක්ලික් කරපු Page එක පෙන්වනවා
         document.getElementById(link.secId).classList.remove('hidden');
         
-        // ක්ලික් කරපු Button එක නිල් පාට කරනවා
-        if(link.btnId !== 'menu_profile' && link.btnId !== 'menu_help') {
-            button.classList.add('bg-primaryBlue', 'text-white');
-            button.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
-        }
+        // 4. ක්ලික් කරපු Button එකට විතරක් Active ගතිය (නිල් ඉර සහ Background) දෙනවා
+        button.classList.add('active', 'bg-primaryBlue/10', 'text-primaryBlue', 'font-bold');
+        button.classList.remove('text-slate-500', 'font-semibold');
 
         // ෆෝන් එකෙන් බලද්දී මෙනු එකක් එබුවම ස්වයංක්‍රීයව Sidebar එක වැහෙනවා
         if (window.innerWidth < 768) toggleSidebar();
