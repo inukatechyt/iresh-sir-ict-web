@@ -79,7 +79,8 @@ async function checkUserSession() {
     // දත්ත අදින Functions කෝල් කිරීම
     fetchProgressData();
     loadProfileData(); 
-    loadLessonStore();// Profile දත්ත අදින්නේ මෙතනින්!
+    loadLessonStore();
+    loadMyClasses();// Profile දත්ත අදින්නේ මෙතනින්!
 }
 
 checkUserSession();
@@ -404,3 +405,72 @@ document.getElementById('uploadSlipBtn')?.addEventListener('click', async () => 
         statusMsg.className = "text-sm font-bold text-red-500 block mt-5";
     }
 });
+
+// ==========================================
+// H. Load Enrolled Classes ("My Class")
+// ==========================================
+async function loadMyClasses() {
+    const myClassSec = document.getElementById('sec_myclass');
+    if(!myClassSec || !currentUser) return;
+
+    // ළමයාට අදාළ Enrollments සහ ඒකට සම්බන්ධ Class විස්තර අදිනවා
+    const { data, error } = await supabaseClient
+        .from('enrollments')
+        .select(`id, classes ( id, title, description, cover_image, type )`)
+        .eq('user_id', currentUser.id)
+        .eq('status', 'Active');
+
+    if (error || !data || data.length === 0) return; // පන්ති නැත්නම් අර කලින් තිබ්බ හිස් පණිවිඩයම තියෙනවා
+
+    // පන්ති තියෙනවා නම් UI එක අලුතින් හදනවා
+    myClassSec.innerHTML = `
+        <h3 class="text-3xl font-black mb-8 pl-2 text-textDark flex items-center">
+            <svg class="w-8 h-8 mr-3 text-primaryBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            My Classes
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="activeClassesGrid"></div>
+    `;
+
+    const grid = document.getElementById('activeClassesGrid');
+    data.forEach(enrollment => {
+        const cls = enrollment.classes;
+        if(!cls) return;
+        const imgHtml = cls.cover_image ? `<img src="${cls.cover_image}" class="w-full h-40 object-cover rounded-2xl mb-5 shadow-sm border border-slate-100">` : ``;
+        
+        grid.innerHTML += `
+            <div class="bg-white p-6 rounded-[2rem] shadow-card flex flex-col h-full border-t-4 border-primaryBlue">
+                ${imgHtml}
+                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wide w-max mb-3">Active</span>
+                <h4 class="font-black text-xl text-textDark mb-2">${cls.title}</h4>
+                <div class="mt-auto pt-5">
+                    <button class="w-full bg-primaryBlue hover:bg-blue-600 text-white font-black py-3.5 rounded-xl transition-colors shadow-sm">
+                        Watch Lessons 🎬
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+window.filterClasses = function(type, btnElement) {
+    // Buttons වල පාට මාරු කිරීම
+    document.querySelectorAll('.store-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-primaryBlue', 'shadow-sm');
+        btn.classList.add('text-textGray');
+    });
+    btnElement.classList.add('bg-white', 'text-primaryBlue', 'shadow-sm');
+    btnElement.classList.remove('text-textGray');
+
+    // Cards ෆිල්ටර් කිරීම (Title එකේ A/L හෝ O/L තියෙනවද කියලා බලනවා)
+    const cards = document.querySelectorAll('.class-card-item');
+    cards.forEach(card => {
+        const title = card.dataset.title;
+        if (type === 'All') {
+            card.style.display = 'flex';
+        } else if (title.includes(type)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
