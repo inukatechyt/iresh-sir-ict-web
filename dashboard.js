@@ -461,9 +461,10 @@ async function loadMyClasses() {
                 <h4 class="font-black text-xl text-textDark mb-2">${cls.title}</h4>
                 <p class="text-sm text-textGray font-semibold mb-6 line-clamp-2">${cls.description || ''}</p>
                 <div class="mt-auto pt-5">
-                    <button class="w-full bg-primaryBlue hover:bg-blue-600 text-white font-black py-3.5 rounded-xl transition-colors shadow-sm">
-                        Watch Lessons 🎬
-                    </button>
+                    // loadMyClasses() ඇතුළේ ඇති Button එක මෙන්න මේ විදිහට වෙනස් කරන්න:
+<button onclick="openLessonViewer('${cls.id}', '${cls.title}', '${cls.type}')" class="w-full bg-primaryBlue hover:bg-blue-600 text-white font-black py-3.5 rounded-xl transition-colors shadow-sm">
+    Watch Lessons 🎬
+</button>
                 </div>
             </div>
         `;
@@ -491,4 +492,76 @@ window.filterClasses = function(type, btnElement) {
             card.style.display = 'none';
         }
     });
+}
+
+
+// ==========================================
+// I. Watch Lessons & Interior Viewer Logic
+// ==========================================
+
+// 1. "Watch Lessons" බොත්තම එබුවම Modal එක ඕපන් වීම
+window.openLessonViewer = async function(classId, classTitle, classType) {
+    const modal = document.getElementById('lessonViewerModal');
+    const titleEl = document.getElementById('viewerClassTitle');
+    const typeEl = document.getElementById('viewerClassType');
+    const grid = document.getElementById('lessonContentGrid');
+
+    if(!modal) return;
+
+    titleEl.innerText = classTitle;
+    typeEl.innerText = classType;
+    modal.classList.remove('hidden');
+    grid.innerHTML = '<p class="col-span-full text-center text-textGray font-bold py-12">Loading lessons... ⏳</p>';
+
+    // අදාළ පන්තියට (class_id) දාලා තියෙන වීඩියෝ සහ PDF ටික අදිනවා
+    const { data, error } = await supabaseClient
+        .from('class_content')
+        .select('*')
+        .eq('class_id', classId)
+        .order('created_at', { ascending: true });
+
+    if (error || !data || data.length === 0) {
+        grid.innerHTML = `
+            <div class="col-span-full text-center py-16 bg-white rounded-3xl shadow-sm">
+                <p class="text-textGray font-bold text-lg">මෙම පන්තිය සඳහා තවමත් වීඩියෝ හෝ Tutes ඇතුළත් කර නොමැත. 📌</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = '';
+    data.forEach(item => {
+        const isVideo = item.content_type === 'Video';
+        const badgeBg = isVideo ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-primaryBlue';
+        const iconSvg = isVideo 
+            ? `<svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Video`
+            : `<svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg> PDF / Tute`;
+
+        const coverImg = item.cover_image ? `<img src="${item.cover_image}" class="w-full h-40 object-cover rounded-2xl mb-4 shadow-sm">` : `<div class="h-36 bg-bgLight rounded-2xl mb-4 flex items-center justify-center font-bold text-textGray">Lesson Preview</div>`;
+        const durationHtml = item.duration ? `<span class="text-xs font-bold text-textGray flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${item.duration}</span>` : ``;
+
+        const card = document.createElement('div');
+        card.className = 'bg-white p-6 rounded-[2rem] shadow-card flex flex-col justify-between border border-slate-50 hover:shadow-lg transition';
+        card.innerHTML = `
+            <div>
+                ${coverImg}
+                <div class="flex items-center justify-between mb-2">
+                    <span class="${badgeBg} px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wide">${iconSvg}</span>
+                    ${durationHtml}
+                </div>
+                <h4 class="font-black text-lg text-textDark mb-1">${item.title}</h4>
+                <p class="text-xs text-textGray font-semibold mb-4">${item.description || ''}</p>
+            </div>
+            <a href="${item.file_url}" target="_blank" class="w-full text-center bg-bgLight hover:bg-primaryBlue hover:text-white text-textDark font-black py-3 rounded-xl transition shadow-sm block">
+                ${isVideo ? 'Watch Video ▶' : 'Download Tute 📄'}
+            </a>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// 2. Modal එක වසා දැමීම
+window.closeLessonViewer = function() {
+    const modal = document.getElementById('lessonViewerModal');
+    if(modal) modal.classList.add('hidden');
 }

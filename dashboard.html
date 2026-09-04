@@ -274,6 +274,34 @@
                     <p class="text-textGray font-bold text-lg">ගැටළුවක් ඇත්නම් කරුණාකර Admin WhatsApp අංකයට පණිවිඩයක් එවන්න...</p>
                 </div>
             </section>
+            <!-- Interior Lesson Viewer Modal (Watch Lessons UI) -->
+    <div id="lessonViewerModal" class="fixed inset-0 bg-textDark/60 backdrop-blur-md z-50 hidden flex flex-col overflow-y-auto">
+        <div class="max-w-6xl w-full mx-auto my-auto bg-bgLight min-h-screen md:min-h-[85vh] md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden relative">
+            
+            <!-- Top Header Bar -->
+            <div class="bg-white p-6 px-8 flex items-center justify-between border-b border-slate-100">
+                <div>
+                    <span id="viewerClassType" class="bg-blue-50 text-primaryBlue px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wide">Monthly Class</span>
+                    <h2 id="viewerClassTitle" class="text-2xl font-black text-textDark mt-1">Class Title Here</h2>
+                </div>
+                <button onclick="closeLessonViewer()" class="p-3 bg-bgLight hover:bg-red-50 hover:text-red-500 rounded-full transition text-textDark font-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Content Area (Videos & Tutes Grid) -->
+            <div class="p-6 md:p-10 flex-1 overflow-y-auto">
+                <div id="lessonContentGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Dynamic Videos & Tutes Cards will load here -->
+                    <p class="col-span-full text-center text-textGray font-bold py-12">Loading lessons... ⏳</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
 
         </main>
     </div>
