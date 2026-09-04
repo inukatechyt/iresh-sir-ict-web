@@ -327,3 +327,44 @@ async function loadStudentManager() {
         tbody.appendChild(tr);
     });
 }
+
+
+// ==========================================
+// Dashboard Analytics Logic
+// ==========================================
+
+async function loadDashboardStats() {
+    const elStudents = document.getElementById('statStudents');
+    const elPending = document.getElementById('statPending');
+    const elRevenue = document.getElementById('statRevenue');
+
+    if (!elStudents || !elPending || !elRevenue) return;
+
+    // 1. සම්පූර්ණ සිසුන් ගණන ගැනීම
+    const { count: studentCount, error: err1 } = await supabaseClient
+        .from('students')
+        .select('*', { count: 'exact', head: true });
+        
+    if (!err1) elStudents.innerText = studentCount || 0;
+
+    // 2. Pending තත්ත්වයේ ඇති Payments ගණන ගැනීම
+    const { count: pendingCount, error: err2 } = await supabaseClient
+        .from('payments')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'Pending');
+        
+    if (!err2) elPending.innerText = pendingCount || 0;
+
+    // 3. Approved Payments වලින් මුළු ආදායම ගණනය කිරීම
+    const { data: revenueData, error: err3 } = await supabaseClient
+        .from('payments')
+        .select('amount')
+        .eq('status', 'Approved');
+
+    if (!err3 && revenueData) {
+        // ඔක්කොම ගණන් ටික එකතු කිරීම
+        const total = revenueData.reduce((sum, record) => sum + (Number(record.amount) || 0), 0);
+        // Rs. 2,500 වගේ ලස්සනට පෙන්වන්න toLocaleString() පාවිච්චි කරනවා
+        elRevenue.innerText = `Rs. ${total.toLocaleString()}`;
+    }
+}

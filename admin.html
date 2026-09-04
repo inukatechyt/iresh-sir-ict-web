@@ -92,19 +92,22 @@
         <main class="flex-1 overflow-y-auto px-4 md:px-6 pb-10">
             
             <!-- 1. Overview Section -->
-            <section id="sec_overview" class="page-section">
+            <section id="sec_overview" class="page-section max-w-7xl mx-auto">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white dark:bg-cardDark p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
-                        <p class="text-slate-500 font-bold mb-2">Total Students</p>
-                        <h3 class="text-4xl font-black text-primaryAdmin">0</h3>
+                    <!-- Total Students -->
+                    <div class="bg-slate-800/50 p-8 rounded-[2rem] border border-slate-700/50 shadow-sm">
+                        <p class="text-slate-400 font-bold text-sm mb-2">Total Students</p>
+                        <h2 id="statStudents" class="text-4xl font-black text-purple-500">⏳</h2>
                     </div>
-                    <div class="bg-white dark:bg-cardDark p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
-                        <p class="text-slate-500 font-bold mb-2">Pending Payments</p>
-                        <h3 class="text-4xl font-black text-yellow-500">0</h3>
+                    <!-- Pending Payments -->
+                    <div class="bg-slate-800/50 p-8 rounded-[2rem] border border-slate-700/50 shadow-sm">
+                        <p class="text-slate-400 font-bold text-sm mb-2">Pending Payments</p>
+                        <h2 id="statPending" class="text-4xl font-black text-yellow-500">⏳</h2>
                     </div>
-                    <div class="bg-white dark:bg-cardDark p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
-                        <p class="text-slate-500 font-bold mb-2">Total Revenue</p>
-                        <h3 class="text-4xl font-black text-green-500">Rs. 0</h3>
+                    <!-- Total Revenue -->
+                    <div class="bg-slate-800/50 p-8 rounded-[2rem] border border-slate-700/50 shadow-sm">
+                        <p class="text-slate-400 font-bold text-sm mb-2">Total Revenue (Approved)</p>
+                        <h2 id="statRevenue" class="text-4xl font-black text-green-500">⏳</h2>
                     </div>
                 </div>
             </section>
