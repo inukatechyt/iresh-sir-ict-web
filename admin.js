@@ -1,8 +1,11 @@
-// Supabase Connection (සම්පූර්ණයෙන්ම අලුතින් සහ නිවැරදිව සම්බන්ධ කිරීම)
+// ==========================================
+// 1. SUPABASE CONNECTION FIX
+// ==========================================
 const SUPABASE_URL = 'https://ercowsldngxxzpvpevxa.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVyY293c2xkbmd4eHpwdnBldnhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNjA1NjksImV4cCI6MjEwMzkzNjU2OX0.BGFibu7_xRZUl9c2rkH3KA-y0kJsm8iCA2YLtnRwn9o';
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// නිවැරදිව Supabase Client එක සෑදීම
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 // ==========================================
 // 1. ADMIN CONFIG & SECURITY
 // ==========================================
