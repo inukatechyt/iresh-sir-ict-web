@@ -36,6 +36,7 @@ async function checkAdminSession() {
     
     // මෙතනින් යටට අපි පස්සේ දත්ත අදින Functions කෝල් කරනවා
     loadPendingPayments();
+    
 }
 
 checkAdminSession();
