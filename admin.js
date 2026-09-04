@@ -122,6 +122,7 @@ async function checkAdminSession() {
     // දැන් Function එක උඩින් ඩිෆයින් කරලා තියෙන නිසා මේක හරියට වැඩ කරයි!
     loadPendingPayments(); 
     loadClassesDropdown();
+    
 }
 
 checkAdminSession();
@@ -202,7 +203,7 @@ async function loadClassesDropdown() {
 // Admin ලොග් වෙද්දී හෝ Content Manager එකට යද්දී ඩ්‍රොප්ඩවුන් එක ලෝඩ් වීම සඳහා checkAdminSession එක තුළ මෙය කෝල් කරන්න
 // loadClassesDropdown();
 
-// 2. Publish Content බටන් එක එබුවම ඩේටාබේස් එකට සේව් වීම
+// 2. Publish Content බටන් එක එබුවම ඩේටාබේස් එකට සේව් වීම (Thumbnail එකත් සමග)
 document.getElementById('saveContentBtn')?.addEventListener('click', async () => {
     const classId = document.getElementById('contentClassSelect').value;
     const title = document.getElementById('contentTitle').value;
@@ -210,6 +211,7 @@ document.getElementById('saveContentBtn')?.addEventListener('click', async () =>
     const duration = document.getElementById('contentDuration').value;
     const fileUrl = document.getElementById('contentUrl').value;
     const desc = document.getElementById('contentDesc').value;
+    const thumbFile = document.getElementById('contentThumbnail').files[0];
 
     if (!classId || !title || !fileUrl) {
         alert("කරුණාකර පන්තිය, මාතෘකාව සහ ලින්ක් එක අනිවාර්යයෙන් ඇතුළත් කරන්න!");
@@ -222,14 +224,29 @@ document.getElementById('saveContentBtn')?.addEventListener('click', async () =>
     statusMsg.classList.remove('hidden');
 
     try {
-        const { error } = await supabaseClient.from('class_content').insert([
+        let coverImageUrl = null;
+
+        // ෆොටෝ එකක් දාලා තියෙනවා නම් ඒක මුලින්ම Upload කරනවා
+        if (thumbFile) {
+            const fileName = `thumb_${Date.now()}_${thumbFile.name.replace(/\s+/g, '_')}`;
+            const { error: uploadError } = await window.supabaseClient.storage.from('content_thumbnails').upload(fileName, thumbFile);
+            if (uploadError) throw uploadError;
+
+            // Upload කරපු ෆොටෝ එකේ ලින්ක් එක ගන්නවා
+            const { data: { publicUrl } } = window.supabaseClient.storage.from('content_thumbnails').getPublicUrl(fileName);
+            coverImageUrl = publicUrl;
+        }
+
+        // ෆොටෝ ලින්ක් එකත් එක්කම මුළු විස්තරේම Database එකට යවනවා
+        const { error } = await window.supabaseClient.from('class_content').insert([
             {
                 class_id: parseInt(classId),
                 title: title,
                 content_type: type,
                 duration: duration,
                 file_url: fileUrl,
-                description: desc
+                description: desc,
+                cover_image: coverImageUrl
             }
         ]);
 
@@ -238,11 +255,12 @@ document.getElementById('saveContentBtn')?.addEventListener('click', async () =>
         statusMsg.innerText = "Content Published Successfully! 🎉";
         statusMsg.className = "font-bold text-sm text-green-500 block";
         
-        // Form එක Clear කිරීම
+        // Form එක ආපහු හිස් කරනවා
         document.getElementById('contentTitle').value = '';
         document.getElementById('contentDuration').value = '';
         document.getElementById('contentUrl').value = '';
         document.getElementById('contentDesc').value = '';
+        document.getElementById('contentThumbnail').value = '';
 
         setTimeout(() => { statusMsg.classList.add('hidden'); }, 4000);
 
