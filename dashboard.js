@@ -78,7 +78,8 @@ async function checkUserSession() {
     
     // දත්ත අදින Functions කෝල් කිරීම
     fetchProgressData();
-    loadProfileData(); // Profile දත්ත අදින්නේ මෙතනින්!
+    loadProfileData(); 
+    loadLessonStore();// Profile දත්ත අදින්නේ මෙතනින්!
 }
 
 checkUserSession();
@@ -136,44 +137,7 @@ async function fetchProgressData() {
     }
 }
 
-// ==========================================
-// E. Payment Slip Upload
-// ==========================================
-document.getElementById('uploadSlipBtn')?.addEventListener('click', async () => {
-    if (!currentUser) return;
-    const paymentFor = document.getElementById('paymentFor').value;
-    const amount = document.getElementById('paymentAmount').value;
-    const file = document.getElementById('slipFile').files[0];
 
-    if (!paymentFor || !amount || !file) return alert("කරුණාකර සියලුම විස්තර සහ ඡායාරූපය ඇතුළත් කරන්න.");
-
-    const statusMsg = document.getElementById('uploadStatusMsg');
-    statusMsg.innerText = "Upload වෙමින් පවතී... ⏳";
-    statusMsg.className = "text-sm font-bold mt-4 text-primaryBlue block";
-
-    try {
-        const fileName = `${currentUser.id}_${Date.now()}.${file.name.split('.').pop()}`;
-        const { error: uploadError } = await supabaseClient.storage.from('payment_slips').upload(fileName, file);
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabaseClient.storage.from('payment_slips').getPublicUrl(fileName);
-
-        const { error: dbError } = await supabaseClient.from('payments').insert([
-            { user_id: currentUser.id, payment_for: paymentFor, amount: parseInt(amount), slip_url: publicUrl, status: 'Pending' }
-        ]);
-        if (dbError) throw dbError;
-
-        statusMsg.innerText = "සාර්ථකව Upload කරන ලදී! ✅";
-        statusMsg.className = "text-sm font-bold mt-4 text-green-500 block";
-        document.getElementById('paymentFor').value = '';
-        document.getElementById('paymentAmount').value = '';
-        document.getElementById('slipFile').value = '';
-
-    } catch (error) {
-        statusMsg.innerText = "Upload කිරීම අසාර්ථකයි! ❌";
-        statusMsg.className = "text-sm font-bold mt-4 text-red-500 block";
-    }
-});
 
 // ==========================================
 // F. Profile Management Logic
@@ -294,5 +258,149 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
         }
         
         setTimeout(() => { statusMsg.classList.add('hidden'); }, 3000);
+    }
+});
+
+
+// ==========================================
+// G. Lesson Store & Automated Payments
+// ==========================================
+
+// 1. Lesson Store එකට Database එකෙන් පන්ති ගෙන ඒම
+async function loadLessonStore() {
+    const storeGrid = document.querySelector('#sec_lessonstore .grid');
+    if(!storeGrid) return;
+
+    storeGrid.innerHTML = '<p class="col-span-full text-center text-textGray font-bold text-lg">Loading classes... ⏳</p>';
+
+    const { data, error } = await supabaseClient
+        .from('classes')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error || !data) {
+        storeGrid.innerHTML = '<p class="col-span-full text-center text-red-500 font-bold">Error loading store!</p>';
+        return;
+    }
+
+    if (data.length === 0) {
+        storeGrid.innerHTML = '<p class="col-span-full text-center text-textGray font-bold text-lg">තාමත් පන්ති ඇතුළත් කර නොමැත. කරුණාකර පසුව පැමිණෙන්න! 🛒</p>';
+        return;
+    }
+
+    storeGrid.innerHTML = '';
+
+    data.forEach(cls => {
+        const card = document.createElement('div');
+        card.className = 'bg-white p-6 rounded-[2rem] shadow-card hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full border border-slate-50';
+        
+        const imgHtml = cls.cover_image 
+            ? `<img src="${cls.cover_image}" class="w-full h-48 object-cover rounded-2xl mb-6 shadow-sm border border-slate-100">`
+            : `<div class="h-48 bg-bgLight rounded-2xl mb-6 flex items-center justify-center shadow-inner"><span class="text-textGray font-bold">No Cover Image</span></div>`;
+
+        card.innerHTML = `
+            ${imgHtml}
+            <div class="flex items-center mb-3">
+                <span class="bg-blue-50 text-primaryBlue px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide">${cls.type}</span>
+            </div>
+            <h4 class="font-black text-xl text-textDark mb-2">${cls.title}</h4>
+            <p class="text-sm text-textGray font-semibold mb-6 line-clamp-2">${cls.description || ''}</p>
+            
+            <div class="mt-auto">
+                <p class="text-primaryBlue font-black text-3xl mb-4">Rs. ${cls.price}</p>
+                <button onclick="buyClass('${cls.id}', '${cls.title}', ${cls.price})" class="w-full bg-bgLight hover:bg-primaryBlue hover:text-white text-textDark font-black py-4 rounded-xl transition-colors shadow-sm">
+                    Buy Now 💳
+                </button>
+            </div>
+        `;
+        storeGrid.appendChild(card);
+    });
+}
+
+// 2. Buy Now එබුවම Payment Form එක ඔටෝමැටික් පිරවීම
+window.buyClass = function(classId, title, price) {
+    // මෙනු එක Payments වලට මාරු කිරීම
+    document.querySelectorAll('.page-section').forEach(sec => sec.classList.add('hidden'));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active', 'bg-slate-50', 'text-primaryBlue'));
+    
+    document.getElementById('sec_payments').classList.remove('hidden');
+    document.getElementById('menu_payments').classList.add('active', 'bg-slate-50', 'text-primaryBlue');
+
+    // Form එකට දත්ත පිරවීම සහ Lock කිරීම (ළමයාට වෙනස් කරන්න බැරි වෙන්න)
+    const payFor = document.getElementById('paymentFor');
+    const payAmount = document.getElementById('paymentAmount');
+    
+    payFor.value = title;
+    payFor.dataset.classId = classId; // අදාළ පන්තියේ ID එක හැංගුවා 
+    payFor.readOnly = true;
+    payFor.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+
+    payAmount.value = price;
+    payAmount.readOnly = true;
+    payAmount.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+}
+
+// 3. අලුත් ක්‍රමයට Slip එක Upload කිරීම (Class ID එකත් එක්ක)
+document.getElementById('uploadSlipBtn')?.addEventListener('click', async () => {
+    if (!currentUser) return;
+    
+    const paymentForInput = document.getElementById('paymentFor');
+    const paymentFor = paymentForInput.value;
+    const classId = paymentForInput.dataset.classId || null; 
+    const amount = document.getElementById('paymentAmount').value;
+    const file = document.getElementById('slipFile').files[0];
+
+    if (!paymentFor || !amount || !file) {
+        return alert("කරුණාකර සියලුම විස්තර සහ ඡායාරූපය ඇතුළත් කරන්න.");
+    }
+
+    const statusMsg = document.getElementById('uploadStatusMsg');
+    statusMsg.innerText = "Uploading... ⏳";
+    statusMsg.className = "text-sm font-bold text-primaryBlue block mt-5";
+    statusMsg.classList.remove('hidden');
+
+    try {
+        const fileName = `slip_${currentUser.id}_${Date.now()}.${file.name.split('.').pop()}`;
+        const { error: uploadError } = await supabaseClient.storage.from('payment_slips').upload(fileName, file);
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabaseClient.storage.from('payment_slips').getPublicUrl(fileName);
+
+        // Database එකට Class ID එකත් එක්කම යවනවා
+        const { error: dbError } = await supabaseClient.from('payments').insert([
+            { 
+                user_id: currentUser.id, 
+                payment_for: paymentFor, 
+                amount: parseInt(amount), 
+                slip_url: publicUrl, 
+                status: 'Pending',
+                class_id: classId 
+            }
+        ]);
+        
+        if (dbError) throw dbError;
+
+        statusMsg.innerText = "සාර්ථකව Upload කරන ලදී! ✅";
+        statusMsg.className = "text-sm font-bold text-green-500 block mt-5 bg-green-50 p-3 rounded-xl text-center";
+        
+        // Form එක ආපසු Clear කිරීම
+        paymentForInput.value = '';
+        paymentForInput.removeAttribute('data-class-id');
+        paymentForInput.readOnly = false;
+        paymentForInput.classList.remove('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+        
+        const payAmount = document.getElementById('paymentAmount');
+        payAmount.value = '';
+        payAmount.readOnly = false;
+        payAmount.classList.remove('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+        
+        document.getElementById('slipFile').value = '';
+
+        setTimeout(() => { statusMsg.classList.add('hidden'); }, 4000);
+
+    } catch (error) {
+        console.error(error);
+        statusMsg.innerText = "Upload කිරීම අසාර්ථකයි! ❌";
+        statusMsg.className = "text-sm font-bold text-red-500 block mt-5";
     }
 });
