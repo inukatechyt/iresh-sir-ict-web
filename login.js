@@ -93,3 +93,23 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
         }, 1000);
     }
 });
+
+
+// Google Auth Logic
+async function loginWithGoogle() {
+    try {
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin + '/dashboard.html' // ලොග් වුණාම යන්න ඕන තැන
+            }
+        });
+
+        if (error) {
+            console.error("Google Auth Error:", error.message);
+            alert("Google Login Error: " + error.message);
+        }
+    } catch (err) {
+        console.error("Catch Error:", err);
+    }
+}
