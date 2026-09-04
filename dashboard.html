@@ -12,8 +12,8 @@
                 extend: {
                     colors: { 
                         primaryBlue: '#2563EB', 
-                        bgLight: '#F4F7FE', /* Premium Light Gray/Blue Background */
-                        textDark: '#2B3674', /* Premium Dark Blue for Text */
+                        bgLight: '#F4F7FE',
+                        textDark: '#2B3674',
                         textGray: '#A3AED0'
                     },
                     borderRadius: { '3xl': '1.5rem', '4xl': '2rem' },
@@ -27,17 +27,13 @@
     </script>
     
     <style>
-        /* Sidebar Styling (Premium Light Theme) */
         #logoIcon { display: none; }
-        
-        /* Active Menu Indicator */
         .nav-btn { position: relative; transition: all 0.3s ease; }
         .nav-btn.active { background-color: #EFF4FF; color: #2563EB; font-weight: 800; }
         .nav-btn.active::before {
             content: ''; position: absolute; left: -16px; top: 50%; transform: translateY(-50%);
             height: 60%; width: 5px; background-color: #2563EB; border-radius: 0 6px 6px 0;
         }
-
         @media (min-width: 768px) {
             .desktop-sidebar { width: 6.5rem !important; }
             .desktop-sidebar .sidebar-text { display: none; }
@@ -51,8 +47,6 @@
             .desktop-sidebar.is-expanded #logoText { display: block; }
             .desktop-sidebar.is-expanded #logoIcon { display: none; }
         }
-
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
@@ -69,7 +63,6 @@
 
     <!-- Floating White Sidebar -->
     <aside id="sidebar" class="desktop-sidebar fixed md:static inset-y-0 left-0 z-50 bg-white shadow-soft transition-all duration-300 flex flex-col transform -translate-x-full md:translate-x-0 w-72 rounded-r-[2rem] md:rounded-none md:border-r border-slate-100">
-        
         <div class="flex items-center justify-between md:justify-center p-6 h-[100px]">
             <h1 id="logoText" class="text-3xl font-black text-primaryBlue tracking-wider whitespace-nowrap">LMS <span class="text-textDark">PORTAL</span></h1>
             <h1 id="logoIcon" class="text-4xl font-black text-primaryBlue tracking-wider">L</h1>
@@ -146,39 +139,24 @@
             <!-- 1. Dashboard Section -->
             <section id="sec_dashboard" class="page-section">
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                    
                     <!-- Data Entry Card -->
                     <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-card relative overflow-hidden">
                         <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl pointer-events-none"></div>
-                        
                         <h3 class="text-2xl font-black mb-8 flex items-center text-textDark">
-                            <span class="text-primaryBlue mr-3">
-                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            </span>
+                            <span class="text-primaryBlue mr-3"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span>
                             Work Time Analyze
                         </h3>
                         <div class="space-y-6 relative z-10">
-                            <div>
-                                <label class="block text-sm font-bold mb-3 text-textGray">දිනය</label>
-                                <input type="date" id="studyDate" class="w-full p-4 rounded-2xl bg-bgLight border-none text-textDark font-bold outline-none focus:ring-2 focus:ring-primaryBlue/20 transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold mb-3 text-textGray">පැය ගණන</label>
-                                <input type="number" id="studyHours" placeholder="උදා: 4" class="w-full p-4 rounded-2xl bg-bgLight border-none text-textDark font-bold outline-none focus:ring-2 focus:ring-primaryBlue/20 transition-all">
-                            </div>
-                            <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-600 text-white font-black py-4 rounded-2xl transition-all shadow-[0_10px_20px_rgba(37,99,235,0.2)] mt-4">
-                                Save Progress
-                            </button>
+                            <div><label class="block text-sm font-bold mb-3 text-textGray">දිනය</label><input type="date" id="studyDate" class="w-full p-4 rounded-2xl bg-bgLight border-none text-textDark font-bold outline-none focus:ring-2 focus:ring-primaryBlue/20 transition-all"></div>
+                            <div><label class="block text-sm font-bold mb-3 text-textGray">පැය ගණන</label><input type="number" id="studyHours" placeholder="උදා: 4" class="w-full p-4 rounded-2xl bg-bgLight border-none text-textDark font-bold outline-none focus:ring-2 focus:ring-primaryBlue/20 transition-all"></div>
+                            <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-600 text-white font-black py-4 rounded-2xl transition-all shadow-[0_10px_20px_rgba(37,99,235,0.2)] mt-4">Save Progress</button>
                             <p id="statusMsg" class="text-green-600 text-sm text-center hidden mt-4 font-bold bg-green-50 py-3 rounded-xl">Saved Successfully! ✅</p>
                         </div>
                     </div>
-
                     <!-- Chart Card -->
                     <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-card flex flex-col min-h-[420px]">
                         <h3 class="text-2xl font-black mb-8 flex items-center text-textDark">
-                            <span class="text-indigo-500 mr-3">
-                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                            </span>
+                            <span class="text-indigo-500 mr-3"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></span>
                             සතියේ ප්‍රගතිය
                         </h3>
                         <div class="flex-1 w-full relative"><canvas id="progressChart"></canvas></div>
@@ -199,21 +177,17 @@
 
             <!-- 3. Lesson Store Section -->
             <section id="sec_lessonstore" class="page-section hidden">
-                <h3 class="text-3xl font-black mb-8 pl-2 text-textDark">Lesson Store 🛒</h3>
-                <!-- Premium Toggle Slider -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 px-2">
+                    <h3 class="text-3xl font-black text-textDark mb-4 md:mb-0">Lesson Store 🛒</h3>
+                    <!-- Premium Toggle Slider -->
                     <div class="bg-bgLight p-1.5 rounded-2xl inline-flex w-full md:w-auto shadow-inner">
                         <button onclick="filterClasses('All', this)" class="store-filter-btn flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold bg-white text-primaryBlue shadow-sm transition-all">All</button>
                         <button onclick="filterClasses('A/L', this)" class="store-filter-btn flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold text-textGray hover:text-textDark transition-all">A/L Classes</button>
                         <button onclick="filterClasses('O/L', this)" class="store-filter-btn flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold text-textGray hover:text-textDark transition-all">O/L Classes</button>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-white p-6 rounded-[2rem] shadow-card hover:-translate-y-2 transition-transform duration-300">
-                        <div class="h-48 bg-bgLight rounded-2xl mb-6 flex items-center justify-center shadow-inner"><span class="text-textGray font-bold">Class Cover Image</span></div>
-                        <h4 class="font-black text-xl text-textDark">2026 A/L ICT - September</h4>
-                        <p class="text-primaryBlue font-black text-3xl mt-3">Rs. 2500</p>
-                        <button class="w-full mt-6 bg-bgLight hover:bg-primaryBlue hover:text-white text-textDark font-black py-4 rounded-xl transition-colors shadow-sm">Buy Now</button>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="storeGridItems">
+                    <!-- Classes will load here -->
                 </div>
             </section>
 
@@ -309,8 +283,6 @@
     
     <!-- JS Tweak for Active Menu -->
     <script>
-        // අපේ JS ෆයිල් එකේ තියෙන active menu logic එකට පොඩි වෙනසක්.
-        // dashboard.js එකේ Menu Navigation කෑල්ල මෙතනින් override වෙනවා අලුත් CSS එකට ගැළපෙන්න.
         document.querySelectorAll('.nav-btn').forEach(button => {
             button.addEventListener('click', function(e) {
                 if(this.id !== 'logoutBtn') {
