@@ -229,16 +229,16 @@ document.getElementById('saveContentBtn')?.addEventListener('click', async () =>
         // ෆොටෝ එකක් දාලා තියෙනවා නම් ඒක මුලින්ම Upload කරනවා
         if (thumbFile) {
             const fileName = `thumb_${Date.now()}_${thumbFile.name.replace(/\s+/g, '_')}`;
-            const { error: uploadError } = await window.supabaseClient.storage.from('content_thumbnails').upload(fileName, thumbFile);
+            // window. කෑල්ල ඉවත් කර නිවැරදිව supabaseClient යෙදීම
+            const { error: uploadError } = await supabaseClient.storage.from('content_thumbnails').upload(fileName, thumbFile);
             if (uploadError) throw uploadError;
 
-            // Upload කරපු ෆොටෝ එකේ ලින්ක් එක ගන්නවා
-            const { data: { publicUrl } } = window.supabaseClient.storage.from('content_thumbnails').getPublicUrl(fileName);
+            const { data: { publicUrl } } = supabaseClient.storage.from('content_thumbnails').getPublicUrl(fileName);
             coverImageUrl = publicUrl;
         }
 
-        // ෆොටෝ ලින්ක් එකත් එක්කම මුළු විස්තරේම Database එකට යවනවා
-        const { error } = await window.supabaseClient.from('class_content').insert([
+        // විස්තර Database එකට යැවීම
+        const { error } = await supabaseClient.from('class_content').insert([
             {
                 class_id: parseInt(classId),
                 title: title,
@@ -255,7 +255,7 @@ document.getElementById('saveContentBtn')?.addEventListener('click', async () =>
         statusMsg.innerText = "Content Published Successfully! 🎉";
         statusMsg.className = "font-bold text-sm text-green-500 block";
         
-        // Form එක ආපහු හිස් කරනවා
+        // Form එක Clear කිරීම
         document.getElementById('contentTitle').value = '';
         document.getElementById('contentDuration').value = '';
         document.getElementById('contentUrl').value = '';
