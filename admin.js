@@ -91,35 +91,41 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 // ==========================================
 // Payment Approvals Logic
 // ==========================================
-
-async function loadPendingPayments() {
-    const tbody = document.getElementById('pendingPaymentsTable');
-    if(!tbody) return;
-
-    const { data, error } = await supabaseClient.from('payments').select('*').eq('status', 'Pending').order('created_at', { ascending: false });
-
-    if (error || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-500 font-bold">${error ? 'Error loading data' : 'No pending payments to approve. 🎉'}</td></tr>`;
+window.approvePayment = async function(paymentId, userId, classId) {
+    if(!confirm("Are you sure you want to approve this payment?")) return;
+    
+    // 1. මුලින්ම පේමන්ට් එක 'Approved' කියලා අප්ඩේට් කරනවා
+    const { error: payErr } = await supabaseClient
+        .from('payments')
+        .update({ status: 'Approved' })
+        .eq('id', paymentId);
+        
+    if(payErr) {
+        alert("Error updating payment: " + payErr.message);
         return;
     }
 
-    tbody.innerHTML = '';
-    data.forEach(payment => {
-        const dateStr = new Date(payment.created_at).toLocaleString();
-        const tr = document.createElement('tr');
-        tr.className = 'border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/20';
-        tr.innerHTML = `
-            <td class="py-4 text-sm font-bold text-slate-800 dark:text-white">${payment.payment_for}</td>
-            <td class="py-4 text-sm font-bold text-green-600 dark:text-green-400">Rs. ${payment.amount}</td>
-            <td class="py-4 text-sm text-slate-500">${dateStr}</td>
-            <td class="py-4 text-sm"><a href="${payment.slip_url}" target="_blank" class="text-primaryAdmin hover:underline font-bold flex items-center">View Slip</a></td>
-            <td class="py-4 text-sm">
-                <!-- මෙතන payment id, user id, class id ඔක්කොම Button එකට යවනවා -->
-                <button onclick="approvePayment('${payment.id}', '${payment.user_id}', '${payment.class_id || ''}')" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition transform hover:scale-105">Approve</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+    // 2. ඊටපස්සේ ළමයාව ඒ පන්තියට Enroll කරනවා (Duplicate වීම වැළැක්වීමට upsert පාවිච්චි කරමු)
+    if (classId && classId !== 'null' && classId !== 'undefined' && classId !== '') {
+        const { error: enrollErr } = await supabaseClient
+            .from('enrollments')
+            .upsert([
+                { user_id: userId, class_id: parseInt(classId), status: 'Active' }
+            ], { onConflict: 'user_id,class_id' });
+
+        if (enrollErr) {
+            console.error("Enrollment error:", enrollErr);
+            alert("Payment Approved, but failed to enroll student: " + enrollErr.message);
+            return;
+        }
+    } else {
+        alert("Payment Approved! Note: This payment had no linked Class ID, so auto-enrollment was skipped.");
+        loadPendingPayments();
+        return;
+    }
+
+    alert("Payment Approved & Class Activated Successfully! ✅");
+    loadPendingPayments(); // Table එක Refresh කිරීම
 }
 
 window.approvePayment = async function(paymentId, userId, classId) {
