@@ -332,11 +332,7 @@ async function loadStudentManager() {
 
 
 // ==========================================
-// Dashboard Analytics Logic
-// ==========================================
-
-// ==========================================
-// Dashboard Analytics Logic (Fixed & Bulletproof)
+// Dashboard Analytics Logic (100% Working)
 // ==========================================
 
 async function loadDashboardStats() {
@@ -347,18 +343,18 @@ async function loadDashboardStats() {
     if (!elStudents || !elPending || !elRevenue) return;
 
     try {
-        // 1. සම්පූර්ණ සිසුන් ගණන
+        // 1. සම්පූර්ණ සිසුන් ගණන (id වෙනුවට * භාවිතා කර ඇත)
         const { data: students, error: err1 } = await supabaseClient
             .from('students')
-            .select('id');
+            .select('*');
         
         if (err1) console.error("Students fetching error:", err1.message);
         elStudents.innerText = students ? students.length : 0;
 
-        // 2. Pending තත්ත්වයේ ඇති Payments ගණන
+        // 2. Pending තත්ත්වයේ ඇති Payments ගණන (අවශ්‍ය නම් මෙතනත් * දාන්න පුළුවන්)
         const { data: pending, error: err2 } = await supabaseClient
             .from('payments')
-            .select('id')
+            .select('*')
             .eq('status', 'Pending');
         
         if (err2) console.error("Pending payments error:", err2.message);
@@ -374,9 +370,7 @@ async function loadDashboardStats() {
             console.error("Revenue fetching error:", err3.message);
             elRevenue.innerText = "Rs. 0";
         } else if (revenueData) {
-            // ඔක්කොම ගණන් ටික එකතු කිරීම
             const total = revenueData.reduce((sum, record) => {
-                // සමහරවිට Rs. කියලා අකුරු තිබ්බොත් ඒවා අයින් කරලා ගණන් හදන්න
                 const amountCleaned = String(record.amount).replace(/[^0-9.-]+/g, ""); 
                 return sum + (Number(amountCleaned) || 0);
             }, 0);
