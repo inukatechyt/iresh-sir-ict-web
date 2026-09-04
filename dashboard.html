@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="si" class="dark">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,35 +8,44 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { primaryBlue: '#3B82F6', darkBg: '#0B1120', cardDark: '#1E293B' },
-                    borderRadius: { '3xl': '1.5rem', '4xl': '2rem' }
+                    colors: { 
+                        primaryBlue: '#2563EB', 
+                        bgLight: '#F4F7FE', /* Premium Light Gray/Blue Background */
+                        textDark: '#2B3674', /* Premium Dark Blue for Text */
+                        textGray: '#A3AED0'
+                    },
+                    borderRadius: { '3xl': '1.5rem', '4xl': '2rem' },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.04)',
+                        'card': '0px 18px 40px rgba(112, 144, 176, 0.12)'
+                    }
                 }
             }
         }
     </script>
     
-    <!-- Premium Sidebar & Floating CSS -->
     <style>
+        /* Sidebar Styling (Premium Light Theme) */
         #logoIcon { display: none; }
         
-        /* Active Menu Item Styling (අර පැත්තෙන් එන නිල් පාට ඉර) */
+        /* Active Menu Indicator */
         .nav-btn { position: relative; transition: all 0.3s ease; }
+        .nav-btn.active { background-color: #EFF4FF; color: #2563EB; font-weight: 800; }
         .nav-btn.active::before {
-            content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-            height: 60%; width: 4px; background-color: #3B82F6; border-radius: 0 4px 4px 0;
+            content: ''; position: absolute; left: -16px; top: 50%; transform: translateY(-50%);
+            height: 60%; width: 5px; background-color: #2563EB; border-radius: 0 6px 6px 0;
         }
 
         @media (min-width: 768px) {
-            .desktop-sidebar { width: 6rem !important; }
+            .desktop-sidebar { width: 6.5rem !important; }
             .desktop-sidebar .sidebar-text { display: none; }
-            .desktop-sidebar .nav-btn { justify-content: center; margin-left: 0.5rem; margin-right: 0.5rem; }
+            .desktop-sidebar .nav-btn { justify-content: center; margin-left: 1rem; margin-right: 1rem; }
             .desktop-sidebar #logoText { display: none; }
             .desktop-sidebar #logoIcon { display: block; text-align: center; width: 100%; }
 
-            .desktop-sidebar.is-expanded { width: 16rem !important; }
+            .desktop-sidebar.is-expanded { width: 17rem !important; }
             .desktop-sidebar.is-expanded .sidebar-text { display: block; margin-left: 1rem; }
             .desktop-sidebar.is-expanded .nav-btn { justify-content: flex-start; padding-left: 1.25rem; }
             .desktop-sidebar.is-expanded #logoText { display: block; }
@@ -44,376 +53,265 @@
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
     </style>
 
-    <!-- Chart.js & Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<!-- අලුත් Background වර්ණය (තද නිල්/කළු) -->
-<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden flex h-screen font-sans">
+<body class="bg-bgLight text-textDark transition-colors duration-300 overflow-hidden flex h-screen font-sans">
 
     <!-- Mobile Overlay -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-textDark/20 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- Sidebar Navigation -->
-    <aside id="sidebar" class="desktop-sidebar fixed md:static inset-y-0 left-0 z-50 bg-white dark:bg-cardDark border-r border-slate-200 dark:border-slate-800/50 transition-all duration-300 flex flex-col transform -translate-x-full md:translate-x-0 w-72">
+    <!-- Floating White Sidebar -->
+    <aside id="sidebar" class="desktop-sidebar fixed md:static inset-y-0 left-0 z-50 bg-white shadow-soft transition-all duration-300 flex flex-col transform -translate-x-full md:translate-x-0 w-72 rounded-r-[2rem] md:rounded-none md:border-r border-slate-100">
         
-        <div class="flex items-center justify-between md:justify-center p-6 h-[88px]">
-            <h1 id="logoText" class="text-2xl font-black text-primaryBlue tracking-wider whitespace-nowrap">LMS <span class="text-white">PORTAL</span></h1>
-            <h1 id="logoIcon" class="text-3xl font-black text-primaryBlue tracking-wider"></h1>
-            <button id="closeSidebarBtn" class="md:hidden text-slate-400 hover:text-white ml-auto">
+        <div class="flex items-center justify-between md:justify-center p-6 h-[100px]">
+            <h1 id="logoText" class="text-3xl font-black text-primaryBlue tracking-wider whitespace-nowrap">LMS <span class="text-textDark">PORTAL</span></h1>
+            <h1 id="logoIcon" class="text-4xl font-black text-primaryBlue tracking-wider">L</h1>
+            <button id="closeSidebarBtn" class="md:hidden text-textGray hover:text-primaryBlue ml-auto">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
-        <nav class="flex-1 py-4 space-y-3 overflow-y-auto overflow-x-hidden">
-            <!-- Default Active Item -->
-            <a href="#" id="menu_dashboard" class="nav-btn active flex items-center p-3.5 mx-3 bg-primaryBlue/10 text-primaryBlue rounded-xl font-bold transition-all relative" title="Dashboard">
+        <nav class="flex-1 py-4 space-y-3 overflow-y-auto overflow-x-hidden relative">
+            <a href="#" id="menu_dashboard" class="nav-btn active flex items-center p-4 mx-4 text-textGray hover:bg-slate-50 hover:text-primaryBlue rounded-2xl font-bold transition-all" title="Dashboard">
                 <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span class="sidebar-text whitespace-nowrap">Dashboard</span>
             </a>
-            
-            <a href="#" id="menu_myclass" class="nav-btn flex items-center p-3.5 mx-3 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl font-semibold transition-all relative" title="My Class">
+            <a href="#" id="menu_myclass" class="nav-btn flex items-center p-4 mx-4 text-textGray hover:bg-slate-50 hover:text-primaryBlue rounded-2xl font-bold transition-all" title="My Class">
                 <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap">My Class</span>
             </a>
-            
-            <a href="#" id="menu_lessonstore" class="nav-btn flex items-center p-3.5 mx-3 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl font-semibold transition-all relative" title="Lesson Store">
+            <a href="#" id="menu_lessonstore" class="nav-btn flex items-center p-4 mx-4 text-textGray hover:bg-slate-50 hover:text-primaryBlue rounded-2xl font-bold transition-all" title="Lesson Store">
                 <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap">Lesson Store</span>
             </a>
-            
-            <a href="#" id="menu_payments" class="nav-btn flex items-center p-3.5 mx-3 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl font-semibold transition-all relative" title="Payments">
+            <a href="#" id="menu_payments" class="nav-btn flex items-center p-4 mx-4 text-textGray hover:bg-slate-50 hover:text-primaryBlue rounded-2xl font-bold transition-all" title="Payments">
                 <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap">Payments</span>
             </a>
         </nav>
 
-        <div class="py-6 border-t border-slate-200 dark:border-slate-800/50 space-y-3">
-            <a href="#" id="menu_profile" class="nav-btn flex items-center p-3.5 mx-3 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl font-semibold transition-all relative" title="Profile">
-                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        <div class="py-6 space-y-3">
+            <a href="#" id="menu_profile" class="nav-btn flex items-center p-4 mx-4 text-sm text-textGray hover:bg-slate-50 hover:text-primaryBlue rounded-2xl font-bold transition-all" title="Profile">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap">My Profile</span>
             </a>
-            <a href="#" id="menu_help" class="nav-btn flex items-center p-3.5 mx-3 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl font-semibold transition-all relative" title="Help">
-                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <a href="#" id="menu_help" class="nav-btn flex items-center p-4 mx-4 text-sm text-textGray hover:bg-slate-50 hover:text-primaryBlue rounded-2xl font-bold transition-all" title="Help">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap">Help & Support</span>
             </a>
         </div>
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col min-w-0 h-screen bg-slate-50 dark:bg-darkBg">
+    <div class="flex-1 flex flex-col min-w-0 h-screen">
         
-        <!-- Premium Floating Topbar -->
-        <header class="m-4 md:m-6 p-4 px-6 bg-white dark:bg-cardDark rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50 flex items-center justify-between z-30 transition-all">
+        <!-- White Floating Topbar -->
+        <header class="mx-4 md:mx-8 mt-6 p-4 px-6 bg-white rounded-full shadow-soft flex items-center justify-between z-30 transition-all">
             <div class="flex items-center">
-                <!-- Hamburger Icon -->
-                <button id="openSidebarBtn" class="p-2 mr-4 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:text-primaryBlue transition-colors">
+                <button id="openSidebarBtn" class="p-2 mr-3 rounded-full bg-bgLight text-textGray hover:text-primaryBlue transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                <div>
-                    <h2 class="text-xl font-bold hidden sm:block text-slate-800 dark:text-slate-200">Good Afternoon, <span id="displayName" class="text-primaryBlue">Student!</span></h2>
-                </div>
+                <h2 class="text-xl font-bold hidden sm:block text-textDark">Good Afternoon, <span id="displayName" class="text-primaryBlue">Student!</span></h2>
             </div>
             
-            <div class="flex items-center space-x-3 sm:space-x-5">
-                <div class="flex items-center bg-slate-100 dark:bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700/50">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-bgLight px-4 py-2 rounded-full">
                     <div class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></div>
-                    <p class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300">
+                    <p class="text-sm font-bold text-textDark">
                         <span id="displayStudentId">Loading...</span>
                     </p>
                 </div>
-                <!-- Profile Avatar / Logout -->
+                <!-- Profile Avatar Dropdown -->
                 <div class="relative group cursor-pointer">
-                    <div class="w-10 h-10 rounded-full bg-primaryBlue/20 border-2 border-primaryBlue flex items-center justify-center text-primaryBlue font-bold">
-                        S
+                    <div class="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-primaryBlue font-black text-lg border-2 border-white shadow-sm overflow-hidden">
+                        <span id="topAvatarText">S</span>
                     </div>
-                    <!-- Dropdown on hover -->
-                    <div class="absolute right-0 mt-2 w-32 bg-white dark:bg-cardDark rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-                        <a href="#" id="logoutBtn" class="block px-4 py-3 text-sm text-red-500 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl">Log Out</a>
+                    <div class="absolute right-0 mt-2 w-32 bg-white rounded-2xl shadow-card opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
+                        <a href="#" id="logoutBtn" class="block px-4 py-3 text-sm text-red-500 font-bold hover:bg-red-50 rounded-2xl text-center">Log Out</a>
                     </div>
                 </div>
             </div>
         </header>
 
         <!-- Dynamic Page Content -->
-        <main class="flex-1 overflow-y-auto px-4 md:px-6 pb-10">
+        <main class="flex-1 overflow-y-auto px-4 md:px-8 py-8">
             
             <!-- 1. Dashboard Section -->
             <section id="sec_dashboard" class="page-section">
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     
                     <!-- Data Entry Card -->
-                    <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-lg border border-slate-100 dark:border-slate-800/50 relative overflow-hidden">
-                        <!-- Decorative glow -->
-                        <div class="absolute -top-10 -right-10 w-40 h-40 bg-primaryBlue/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-card relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl pointer-events-none"></div>
                         
-                        <h3 class="text-xl font-extrabold mb-6 flex items-center">
-                            <span class="bg-primaryBlue/20 p-2 rounded-lg mr-3 text-primaryBlue">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h3 class="text-2xl font-black mb-8 flex items-center text-textDark">
+                            <span class="text-primaryBlue mr-3">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </span>
                             Work Time Analyze
                         </h3>
-                        <div class="space-y-5 relative z-10">
+                        <div class="space-y-6 relative z-10">
                             <div>
-                                <label class="block text-sm font-bold mb-2 text-slate-500">දිනය</label>
-                                <input type="date" id="studyDate" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors">
+                                <label class="block text-sm font-bold mb-3 text-textGray">දිනය</label>
+                                <input type="date" id="studyDate" class="w-full p-4 rounded-2xl bg-bgLight border-none text-textDark font-bold outline-none focus:ring-2 focus:ring-primaryBlue/20 transition-all">
                             </div>
                             <div>
-                                <label class="block text-sm font-bold mb-2 text-slate-500">පැය ගණන</label>
-                                <input type="number" id="studyHours" placeholder="උදා: 4" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors">
+                                <label class="block text-sm font-bold mb-3 text-textGray">පැය ගණන</label>
+                                <input type="number" id="studyHours" placeholder="උදා: 4" class="w-full p-4 rounded-2xl bg-bgLight border-none text-textDark font-bold outline-none focus:ring-2 focus:ring-primaryBlue/20 transition-all">
                             </div>
-                            <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-600 text-white font-black py-4 rounded-2xl transition-all shadow-lg hover:shadow-primaryBlue/30 mt-4">
+                            <button id="saveDataBtn" class="w-full bg-primaryBlue hover:bg-blue-600 text-white font-black py-4 rounded-2xl transition-all shadow-[0_10px_20px_rgba(37,99,235,0.2)] mt-4">
                                 Save Progress
                             </button>
-                            <p id="statusMsg" class="text-green-500 text-sm text-center hidden mt-3 font-bold bg-green-500/10 py-2 rounded-lg">Saved Successfully! ✅</p>
+                            <p id="statusMsg" class="text-green-600 text-sm text-center hidden mt-4 font-bold bg-green-50 py-3 rounded-xl">Saved Successfully! ✅</p>
                         </div>
                     </div>
 
                     <!-- Chart Card -->
-                    <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-lg border border-slate-100 dark:border-slate-800/50 flex flex-col h-[420px]">
-                        <h3 class="text-xl font-extrabold mb-6 flex items-center">
-                            <span class="bg-indigo-500/20 p-2 rounded-lg mr-3 text-indigo-400">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-card flex flex-col min-h-[420px]">
+                        <h3 class="text-2xl font-black mb-8 flex items-center text-textDark">
+                            <span class="text-indigo-500 mr-3">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                             </span>
                             සතියේ ප්‍රගතිය
                         </h3>
-                        <div class="flex-1 w-full"><canvas id="progressChart"></canvas></div>
+                        <div class="flex-1 w-full relative"><canvas id="progressChart"></canvas></div>
                     </div>
                 </div>
             </section>
 
-            <!-- Other Sections (Styling Updated to Match) -->
+            <!-- 2. My Class Section -->
             <section id="sec_myclass" class="page-section hidden">
-                <div class="flex flex-col items-center justify-center text-center p-16 bg-white dark:bg-cardDark rounded-4xl border-2 border-dashed border-slate-300 dark:border-slate-700 shadow-sm mt-6">
-                    <div class="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                <div class="flex flex-col items-center justify-center text-center p-16 bg-white rounded-[2.5rem] shadow-card mt-6">
+                    <div class="w-24 h-24 bg-bgLight rounded-full flex items-center justify-center mb-6 shadow-inner">
+                        <svg class="w-12 h-12 text-textGray" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                     </div>
-                    <h3 class="text-2xl font-black text-slate-700 dark:text-slate-200">ඔබට දැනට සක්‍රීය පන්ති නොමැත</h3>
-                    <p class="text-slate-500 font-semibold mt-4 max-w-md">කරුණාකර 'Lesson Store' වෙත ගොස් පන්තියකට ලියාපදිංචි වී Admin විසින් Payment එක Accept කරන තෙක් රැඳී සිටින්න.</p>
+                    <h3 class="text-3xl font-black text-textDark">ඔබට දැනට සක්‍රීය පන්ති නොමැත</h3>
+                    <p class="text-textGray font-semibold mt-4 max-w-md text-lg">කරුණාකර 'Lesson Store' වෙත ගොස් පන්තියකට ලියාපදිංචි වී Admin විසින් Payment එක Accept කරන තෙක් රැඳී සිටින්න.</p>
                 </div>
             </section>
 
-            <!-- ... අනිත් Sections ටික (Lesson store, Payments) කලින් විදිහටමයි, පෙනුම විතරයි වෙනස් වුණේ ... -->
+            <!-- 3. Lesson Store Section -->
             <section id="sec_lessonstore" class="page-section hidden">
-                <h3 class="text-2xl font-black mb-6 pl-2">Lesson Store 🛒</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-cardDark p-5 rounded-3xl border border-slate-200 dark:border-slate-800 hover:border-primaryBlue transition-all shadow-lg hover:shadow-primaryBlue/20">
-                        <div class="h-40 bg-slate-100 dark:bg-[#0f172a] rounded-2xl mb-5 flex items-center justify-center"><span class="text-slate-500 font-bold">Class Cover Image</span></div>
-                        <h4 class="font-extrabold text-lg">2026 A/L ICT - September</h4>
-                        <p class="text-primaryBlue font-black text-2xl mt-2">Rs. 2500</p>
-                        <button class="w-full mt-5 bg-slate-100 dark:bg-[#0f172a] hover:bg-primaryBlue hover:text-white text-slate-800 dark:text-slate-300 font-bold py-3 rounded-xl transition-colors">Buy Now</button>
+                <h3 class="text-3xl font-black mb-8 pl-2 text-textDark">Lesson Store 🛒</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-[2rem] shadow-card hover:-translate-y-2 transition-transform duration-300">
+                        <div class="h-48 bg-bgLight rounded-2xl mb-6 flex items-center justify-center shadow-inner"><span class="text-textGray font-bold">Class Cover Image</span></div>
+                        <h4 class="font-black text-xl text-textDark">2026 A/L ICT - September</h4>
+                        <p class="text-primaryBlue font-black text-3xl mt-3">Rs. 2500</p>
+                        <button class="w-full mt-6 bg-bgLight hover:bg-primaryBlue hover:text-white text-textDark font-black py-4 rounded-xl transition-colors shadow-sm">Buy Now</button>
                     </div>
                 </div>
             </section>
 
+            <!-- 4. Payments Section -->
             <section id="sec_payments" class="page-section hidden">
-                <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-lg border border-slate-100 dark:border-slate-800 max-w-3xl">
-                    <h3 class="text-xl font-extrabold mb-6">Payment Slip එක Upload කරන්න 💳</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">ගෙවීම කරන්නේ කුමක් සඳහාද?</label><input type="text" id="paymentFor" placeholder="උදා: September Class Fee" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
-                        <div><label class="block text-sm font-bold mb-2 text-slate-500">මුදල (රු.)</label><input type="number" id="paymentAmount" placeholder="උදා: 2500" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors"></div>
-                        <div class="md:col-span-2"><label class="block text-sm font-bold mb-2 text-slate-500">Slip එකේ ඡායාරූපය තෝරන්න (Max 20MB)</label><input type="file" id="slipFile" accept="image/*" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-[#0f172a] border border-dashed border-slate-300 dark:border-slate-600 outline-none"></div>
+                <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-card max-w-3xl">
+                    <h3 class="text-2xl font-black mb-8 text-textDark">Payment Slip එක Upload කරන්න 💳</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">ගෙවීම කරන්නේ කුමක් සඳහාද?</label><input type="text" id="paymentFor" placeholder="උදා: September Class Fee" class="w-full p-4 rounded-2xl bg-bgLight border-none outline-none font-bold text-textDark focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">මුදල (රු.)</label><input type="number" id="paymentAmount" placeholder="උදා: 2500" class="w-full p-4 rounded-2xl bg-bgLight border-none outline-none font-bold text-textDark focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div class="md:col-span-2"><label class="block text-sm font-bold mb-3 text-textGray">Slip එකේ ඡායාරූපය තෝරන්න (Max 20MB)</label><input type="file" id="slipFile" accept="image/*" class="w-full p-4 rounded-2xl bg-bgLight border-none outline-none font-bold text-textDark file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-primaryBlue file:text-white hover:file:bg-blue-600 cursor-pointer"></div>
                     </div>
-                    <button id="uploadSlipBtn" class="mt-6 bg-green-500 hover:bg-green-600 text-white font-black py-4 px-8 rounded-2xl transition shadow-lg hover:shadow-green-500/30 w-full md:w-auto">Slip එක Upload කරන්න</button>
-                    <p id="uploadStatusMsg" class="text-sm font-bold hidden mt-4"></p>
+                    <button id="uploadSlipBtn" class="mt-8 bg-green-500 hover:bg-green-600 text-white font-black py-4 px-10 rounded-2xl transition shadow-[0_10px_20px_rgba(34,197,94,0.2)] w-full md:w-auto">Slip එක Upload කරන්න</button>
+                    <p id="uploadStatusMsg" class="text-sm font-bold hidden mt-5"></p>
                 </div>
             </section>
 
             <!-- 5. Profile Section -->
             <section id="sec_profile" class="page-section hidden max-w-5xl mx-auto">
-                
-                <style>
-                    /* Browser Autofill වෙද්දී සුදු පාට වෙන එක නැවැත්වීම */
-                    .dark input:-webkit-autofill {
-                        -webkit-box-shadow: 0 0 0 30px #1E293B inset !important;
-                        -webkit-text-fill-color: white !important;
-                    }
-                </style>
-
-                <!-- Premium Profile Header Card -->
-                <div class="bg-white dark:bg-cardDark p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
-                    
-                    <!-- Avatar -->
-                    <div class="relative shrink-0">
-                        <div class="w-32 h-32 rounded-3xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-inner overflow-hidden">
-                            <span id="profAvatarText" class="text-5xl font-black text-primaryBlue">S</span>
+                <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-card mb-8 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
+                    <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-50 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="relative shrink-0 z-10">
+                        <div class="w-32 h-32 rounded-[2rem] bg-bgLight border-4 border-white shadow-soft flex items-center justify-center overflow-hidden">
+                            <span id="profAvatarText" class="text-6xl font-black text-primaryBlue">S</span>
                         </div>
-                        <button class="absolute -bottom-3 -right-3 bg-white dark:bg-slate-700 p-2.5 rounded-full shadow-md border border-slate-200 dark:border-slate-600 hover:text-primaryBlue transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                        </button>
                     </div>
-
-                    <!-- Info -->
-                    <div class="text-center md:text-left mt-2 md:mt-3 flex-1">
-                        <h2 id="profTopName" class="text-3xl font-bold text-slate-800 dark:text-white mb-2">Student Name</h2>
-                        <p id="profTopId" class="text-slate-500 font-semibold mb-4">IRESHDICTxxxxxx</p>
-                        <span id="profTopGrade" class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-lg font-bold text-sm border border-slate-200 dark:border-slate-700">Grade Not Set</span>
+                    <div class="text-center md:text-left mt-2 md:mt-4 flex-1 z-10">
+                        <h2 id="profTopName" class="text-4xl font-black text-textDark mb-2">Student Name</h2>
+                        <p id="profTopId" class="text-textGray font-bold mb-5 text-lg">IRESHDICTxxxxxx</p>
+                        <span id="profTopGrade" class="bg-blue-50 text-primaryBlue px-5 py-2.5 rounded-xl font-black text-sm">Grade Not Set</span>
                     </div>
                 </div>
 
-                <!-- Form Card -->
-                <div class="bg-white dark:bg-cardDark p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800">
-                    <h3 class="text-xl font-bold mb-8 flex items-center justify-center md:justify-start text-slate-700 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-5">
-                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-card">
+                    <h3 class="text-2xl font-black mb-10 flex items-center text-textDark">
+                        <svg class="w-7 h-7 mr-3 text-primaryBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         My Profile
                     </h3>
-
-                    <!-- Inputs Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                        
-                        <!-- Row 1 -->
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Email Address</label>
-                            <input type="email" id="profEmail" disabled class="w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 outline-none text-slate-500 cursor-not-allowed">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Grade (Exam Year)</label>
-                            <select id="profGrade" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors appearance-none dark:text-white">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Email Address</label><input type="email" id="profEmail" disabled class="w-full p-4 rounded-2xl bg-slate-50 border-none font-bold text-slate-400 cursor-not-allowed"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Grade (Exam Year)</label>
+                            <select id="profGrade" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20 appearance-none">
                                 <option value="">Select Grade</option>
-                                <option value="2025 A/L">2025 A/L</option>
-                                <option value="2026 A/L">2026 A/L</option>
-                                <option value="2027 A/L">2027 A/L</option>
-                                <option value="Other">Other</option>
+                                <option value="2025 A/L">2025 A/L</option><option value="2026 A/L">2026 A/L</option><option value="2027 A/L">2027 A/L</option><option value="Other">Other</option>
                             </select>
                         </div>
-
-                        <!-- Row 2 -->
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Full Name</label>
-                            <input type="text" id="profFullName" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-
-                        <!-- Row 3 -->
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">First Name</label>
-                            <input type="text" id="profFirstName" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Last Name</label>
-                            <input type="text" id="profLastName" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-
-                        <!-- Row 4 -->
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Phone Number 1</label>
-                            <input type="tel" id="profPhone1" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Phone Number 2</label>
-                            <input type="tel" id="profPhone2" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-
-                        <!-- Row 5 -->
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">NIC Number</label>
-                            <input type="text" id="profNic" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">WhatsApp Number</label>
-                            <input type="tel" id="profWhatsapp" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-
-                        <!-- Row 6 -->
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Date Of Birth</label>
-                            <input type="date" id="profDob" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">District</label>
-                            <!-- District Dropdown -->
-                            <select id="profDistrict" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors appearance-none dark:text-white">
+                        <div class="md:col-span-2"><label class="block text-sm font-bold mb-3 text-textGray">Full Name</label><input type="text" id="profFullName" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">First Name</label><input type="text" id="profFirstName" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Last Name</label><input type="text" id="profLastName" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Phone Number 1</label><input type="tel" id="profPhone1" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Phone Number 2</label><input type="tel" id="profPhone2" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">NIC Number</label><input type="text" id="profNic" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">WhatsApp Number</label><input type="tel" id="profWhatsapp" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Date Of Birth</label><input type="date" id="profDob" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">District</label>
+                            <select id="profDistrict" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20 appearance-none">
                                 <option value="">Select District</option>
-                                <option value="Ampara">Ampara</option>
-                                <option value="Anuradhapura">Anuradhapura</option>
-                                <option value="Badulla">Badulla</option>
-                                <option value="Batticaloa">Batticaloa</option>
-                                <option value="Colombo">Colombo</option>
-                                <option value="Galle">Galle</option>
-                                <option value="Gampaha">Gampaha</option>
-                                <option value="Hambantota">Hambantota</option>
-                                <option value="Jaffna">Jaffna</option>
-                                <option value="Kalutara">Kalutara</option>
-                                <option value="Kandy">Kandy</option>
-                                <option value="Kegalle">Kegalle</option>
-                                <option value="Kilinochchi">Kilinochchi</option>
-                                <option value="Kurunegala">Kurunegala</option>
-                                <option value="Mannar">Mannar</option>
-                                <option value="Matale">Matale</option>
-                                <option value="Matara">Matara</option>
-                                <option value="Monaragala">Monaragala</option>
-                                <option value="Mullaitivu">Mullaitivu</option>
-                                <option value="Nuwara Eliya">Nuwara Eliya</option>
-                                <option value="Polonnaruwa">Polonnaruwa</option>
-                                <option value="Puttalam">Puttalam</option>
-                                <option value="Ratnapura">Ratnapura</option>
-                                <option value="Trincomalee">Trincomalee</option>
-                                    <option value="Vavuniya">Vavuniya</option>
-                                    
+                                <option value="Kurunegala">Kurunegala</option><option value="Colombo">Colombo</option><option value="Kandy">Kandy</option>
                             </select>
                         </div>
-
-                        <!-- Row 7 -->
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Institute</label>
-                            <!-- Institute Dropdown -->
-                            <select id="profInstitute" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors appearance-none dark:text-white">
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Institute</label>
+                            <select id="profInstitute" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20 appearance-none">
                                 <option value="">Select Institute</option>
-                                <option value="CANTAB - IBBAGAMUWA">CANTAB - IBBAGAMUWA</option>
-                                <option value="AAC - WELLAWA">AAC - WELLAWA</option>
-                                <option value="GNANAPRADEEPA - MAWATHAGAMA">GNANAPRADEEPA - MAWATHAGAMA</option>
-                                <option value="GNANAPRADEEPA - KURUNEGALA">GNANAPRADEEPA - KURUNEGALA</option>
-                                <option value="PERADENI - KURUNEGALA">PERADENI - KURUNEGALA</option>
-                                <option value="ONLINE">ONLINE</option>
+                                <option value="CANTAB - IBBAGAMUWA">CANTAB - IBBAGAMUWA</option><option value="ONLINE">ONLINE</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">School Name</label>
-                            <input type="text" id="profSchool" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-
-                        <!-- Row 8 (Guardians) -->
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Guardian's Name</label>
-                            <input type="text" id="profGuardianName" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Guardian's Phone</label>
-                            <input type="tel" id="profGuardianPhone" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
-
-                        <!-- Row 9 -->
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-bold mb-2 text-slate-600 dark:text-slate-400">Home Address</label>
-                            <input type="text" id="profAddress" class="w-full p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-primaryBlue transition-colors dark:text-white">
-                        </div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">School Name</label><input type="text" id="profSchool" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Guardian's Name</label><input type="text" id="profGuardianName" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div><label class="block text-sm font-bold mb-3 text-textGray">Guardian's Phone</label><input type="tel" id="profGuardianPhone" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
+                        <div class="md:col-span-2"><label class="block text-sm font-bold mb-3 text-textGray">Home Address</label><input type="text" id="profAddress" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
                     </div>
-
-                    <div class="flex items-center justify-end mt-10 space-x-4 border-t border-slate-100 dark:border-slate-800 pt-6">
+                    <div class="flex items-center justify-end mt-12 space-x-4 border-t border-slate-100 pt-8">
                         <p id="profStatusMsg" class="font-bold text-sm hidden"></p>
-                        <!-- Cancel බොත්තම සහ Save බොත්තම -->
-                        <button class="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition">Cancel</button>
-                        <button id="profSaveBtn" class="bg-primaryBlue hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl transition shadow-md">
-                            Save Profile
-                        </button>
+                        <button class="px-8 py-4 rounded-2xl bg-bgLight text-textDark font-black hover:bg-slate-200 transition">Cancel</button>
+                        <button id="profSaveBtn" class="bg-primaryBlue hover:bg-blue-600 text-white font-black py-4 px-10 rounded-2xl transition shadow-[0_10px_20px_rgba(37,99,235,0.2)]">Save Profile</button>
                     </div>
                 </div>
-
             </section>
+
+            <!-- 6. Help Section -->
             <section id="sec_help" class="page-section hidden">
-                <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-lg border border-slate-100 dark:border-slate-800 max-w-3xl">
-                    <h3 class="text-xl font-extrabold mb-6">Help & Support 💬</h3>
-                    <p class="text-slate-500 font-semibold">ගැටළුවක් ඇත්නම් කරුණාකර Admin WhatsApp අංකයට පණිවිඩයක් එවන්න.</p>
+                <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-card max-w-3xl">
+                    <h3 class="text-2xl font-black mb-6 text-textDark">Help & Support 💬</h3>
+                    <p class="text-textGray font-bold text-lg">ගැටළුවක් ඇත්නම් කරුණාකර Admin WhatsApp අංකයට පණිවිඩයක් එවන්න.</p>
                 </div>
             </section>
 
         </main>
     </div>
 
+    <!-- Backend JS -->
     <script src="dashboard.js"></script>
+    
+    <!-- JS Tweak for Active Menu -->
+    <script>
+        // අපේ JS ෆයිල් එකේ තියෙන active menu logic එකට පොඩි වෙනසක්.
+        // dashboard.js එකේ Menu Navigation කෑල්ල මෙතනින් override වෙනවා අලුත් CSS එකට ගැළපෙන්න.
+        document.querySelectorAll('.nav-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if(this.id !== 'logoutBtn') {
+                    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active', 'bg-slate-50', 'text-primaryBlue'));
+                    this.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
