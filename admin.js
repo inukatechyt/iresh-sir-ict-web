@@ -121,6 +121,7 @@ async function checkAdminSession() {
     
     // දැන් Function එක උඩින් ඩිෆයින් කරලා තියෙන නිසා මේක හරියට වැඩ කරයි!
     loadPendingPayments(); 
+    loadClassesDropdown();
 }
 
 checkAdminSession();
@@ -132,6 +133,7 @@ const sidebar = document.getElementById('sidebar');
 const openBtn = document.getElementById('openSidebarBtn');
 const closeBtn = document.getElementById('closeSidebarBtn');
 const overlay = document.getElementById('sidebarOverlay');
+
 
 function toggleSidebar() {
     if(sidebar) sidebar.classList.toggle('-translate-x-full');
@@ -146,7 +148,8 @@ const navLinks = [
     { btnId: 'menu_overview', secId: 'sec_overview' },
     { btnId: 'menu_payments', secId: 'sec_payments' },
     { btnId: 'menu_students', secId: 'sec_students' },
-    { btnId: 'menu_lessons', secId: 'sec_lessons' }
+    { btnId: 'menu_lessons', secId: 'sec_lessons' },
+    { btnId: 'menu_contentmanager', secId: 'sec_contentmanager' }
 ];
 
 navLinks.forEach(link => {
@@ -173,3 +176,79 @@ if(logoutBtn) {
         window.location.href = 'login.html';
     });
 }
+
+// ==========================================
+// Content Manager Logic (Admin)
+// ==========================================
+
+// 1. Dropdown එකට Database එකේ තියෙන පන්ති ටික Load කිරීම
+async function loadClassesDropdown() {
+    const select = document.getElementById('contentClassSelect');
+    if(!select) return;
+
+    const { data, error } = await supabaseClient.from('classes').select('id, title').order('created_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+        select.innerHTML = '<option value="">පන්ති හමුවී නැත (මුලින් පන්තියක් සාදන්න)</option>';
+        return;
+    }
+
+    select.innerHTML = '<option value="">-- පන්තියක් හෝ Pack එකක් තෝරන්න --</option>';
+    data.forEach(cls => {
+        select.innerHTML += `<option value="${cls.id}">${cls.title}</option>`;
+    });
+}
+
+// Admin ලොග් වෙද්දී හෝ Content Manager එකට යද්දී ඩ්‍රොප්ඩවුන් එක ලෝඩ් වීම සඳහා checkAdminSession එක තුළ මෙය කෝල් කරන්න
+// loadClassesDropdown();
+
+// 2. Publish Content බටන් එක එබුවම ඩේටාබේස් එකට සේව් වීම
+document.getElementById('saveContentBtn')?.addEventListener('click', async () => {
+    const classId = document.getElementById('contentClassSelect').value;
+    const title = document.getElementById('contentTitle').value;
+    const type = document.getElementById('contentType').value;
+    const duration = document.getElementById('contentDuration').value;
+    const fileUrl = document.getElementById('contentUrl').value;
+    const desc = document.getElementById('contentDesc').value;
+
+    if (!classId || !title || !fileUrl) {
+        alert("කරුණාකර පන්තිය, මාතෘකාව සහ ලින්ක් එක අනිවාර්යයෙන් ඇතුළත් කරන්න!");
+        return;
+    }
+
+    const statusMsg = document.getElementById('contentStatusMsg');
+    statusMsg.innerText = "Publishing Content... ⏳";
+    statusMsg.className = "font-bold text-sm text-primaryAdmin block";
+    statusMsg.classList.remove('hidden');
+
+    try {
+        const { error } = await supabaseClient.from('class_content').insert([
+            {
+                class_id: parseInt(classId),
+                title: title,
+                content_type: type,
+                duration: duration,
+                file_url: fileUrl,
+                description: desc
+            }
+        ]);
+
+        if (error) throw error;
+
+        statusMsg.innerText = "Content Published Successfully! 🎉";
+        statusMsg.className = "font-bold text-sm text-green-500 block";
+        
+        // Form එක Clear කිරීම
+        document.getElementById('contentTitle').value = '';
+        document.getElementById('contentDuration').value = '';
+        document.getElementById('contentUrl').value = '';
+        document.getElementById('contentDesc').value = '';
+
+        setTimeout(() => { statusMsg.classList.add('hidden'); }, 4000);
+
+    } catch (error) {
+        console.error(error);
+        statusMsg.innerText = "Error publishing content! ❌";
+        statusMsg.className = "font-bold text-sm text-red-500 block";
+    }
+});

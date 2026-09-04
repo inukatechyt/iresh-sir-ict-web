@@ -461,7 +461,7 @@ async function loadMyClasses() {
                 <h4 class="font-black text-xl text-textDark mb-2">${cls.title}</h4>
                 <p class="text-sm text-textGray font-semibold mb-6 line-clamp-2">${cls.description || ''}</p>
                 <div class="mt-auto pt-5">
-                    // loadMyClasses() ඇතුළේ ඇති Button එක මෙන්න මේ විදිහට වෙනස් කරන්න:
+                    
 <button onclick="openLessonViewer('${cls.id}', '${cls.title}', '${cls.type}')" class="w-full bg-primaryBlue hover:bg-blue-600 text-white font-black py-3.5 rounded-xl transition-colors shadow-sm">
     Watch Lessons 🎬
 </button>
