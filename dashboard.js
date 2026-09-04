@@ -139,18 +139,16 @@ async function fetchProgressData() {
 }
 
 
-
 // ==========================================
-// F. Profile Management Logic
+// F. Profile Management Logic (Google & Normal Login Fixed)
 // ==========================================
 async function loadProfileData() {
     if (!currentUser) return;
 
     const emailField = document.getElementById('profEmail');
     if(emailField) emailField.value = currentUser.email || '';
-    
-    document.getElementById('profTopId').innerText = currentUser.user_metadata?.student_id || 'N/A';
 
+    // 1. මුලින්ම Database එකෙන් (students table එකෙන්) මේ ළමයාගේ විස්තර බලනවා
     const { data, error } = await supabaseClient
         .from('students')
         .select('*')
@@ -161,6 +159,17 @@ async function loadProfileData() {
         console.error("Profile load error:", error);
         return;
     }
+
+    // 2. Student ID එක සෙට් කිරීම (Database එකේ තියෙනව නම් ඒක, නැත්නම් Metadata එකේ, නැත්නම් අලුතින් හදනවා)
+    let finalStudentId = data?.student_id || currentUser.user_metadata?.student_id;
+    
+    if (!finalStudentId || finalStudentId === 'N/A') {
+        // ID එකක් නැත්නම් අලුතින් IRESHDICT සමඟ අහඹු ඉලක්කම් 6ක් හදනවා
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        finalStudentId = 'IRESHDICT' + randomNum;
+    }
+
+    document.getElementById('profTopId').innerText = finalStudentId;
 
     if (data) {
         document.getElementById('profGrade').value = data.grade || '';
@@ -179,12 +188,12 @@ async function loadProfileData() {
         document.getElementById('profGuardianPhone').value = data.guardian_phone || '';
         document.getElementById('profAddress').value = data.address || '';
         
-        // 🔥 Database එකෙන් නම අරගෙන UI එක අප්ඩේට් කිරීම 🔥
+        // UI එකේ නම සහ අවතਾਰය අප්ඩේට් කිරීම
         const dbFullName = data.full_name || currentUser.user_metadata?.full_name || 'Student';
         const dbFirstName = data.first_name || dbFullName;
 
-        document.getElementById('profTopName').innerText = dbFullName; // Profile එකේ ලොකු නම
-        document.getElementById('displayName').innerText = dbFirstName; // Topbar එකේ "Good Afternoon, Inuka!"
+        document.getElementById('profTopName').innerText = dbFullName; 
+        document.getElementById('displayName').innerText = dbFirstName; 
 
         if(data.grade) document.getElementById('profTopGrade').innerText = data.grade;
         
@@ -195,10 +204,15 @@ async function loadProfileData() {
             if(topAvatar) topAvatar.innerText = firstLetter;
         }
     } else {
-        // දත්ත නැත්නම් Sign Up වුණ නම පෙන්නනවා
-        const authName = currentUser.user_metadata?.full_name || 'Student';
+        // Database එකේ ඩේටා නැත්නම් (අලුත් Google User කෙනෙක් නම්) Auth එකේ නම පෙන්නනවා
+        const authName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0] || 'Student';
         document.getElementById('profTopName').innerText = authName;
         document.getElementById('displayName').innerText = authName;
+
+        const firstLetter = authName.charAt(0).toUpperCase();
+        document.getElementById('profAvatarText').innerText = firstLetter;
+        const topAvatar = document.getElementById('topAvatarText');
+        if(topAvatar) topAvatar.innerText = firstLetter;
     }
 }
 
@@ -210,9 +224,12 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
     statusMsg.className = "font-bold text-sm text-primaryBlue block mt-4";
     statusMsg.classList.remove('hidden');
 
+    // UI එකේ දැනට තියෙන Student ID එක ලබාගැනීම
+    const currentStudentId = document.getElementById('profTopId').innerText;
+
     const profileData = {
         user_id: currentUser.id,
-        student_id: currentUser.user_metadata?.student_id,
+        student_id: (currentStudentId && currentStudentId !== 'N/A') ? currentStudentId : ('IRESHDICT' + Math.floor(100000 + Math.random() * 900000)),
         grade: document.getElementById('profGrade').value,
         full_name: document.getElementById('profFullName').value,
         first_name: document.getElementById('profFirstName').value,
@@ -235,14 +252,14 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
         .upsert(profileData, { onConflict: 'user_id' });
 
     if (error) {
-        console.error(error);
-        statusMsg.innerText = "Error saving profile! ❌";
-        statusMsg.className = "font-bold text-sm text-red-500 block mt-4";
+        console.error("Save error details:", error);
+        statusMsg.innerText = "Error saving profile: " + error.message + " ❌";
+        statusMsg.className = "font-bold text-sm text-red-500 block mt-4 bg-red-50 p-2 rounded-lg text-center";
     } else {
         statusMsg.innerText = "Profile Saved Successfully! ✅";
         statusMsg.className = "font-bold text-sm text-green-600 block mt-4 bg-green-50 p-2 rounded-lg text-center";
         
-        // 🔥 Save කරපු ගමන් අලුත් නම UI එකට දැමීම 🔥
+        // Save කරපු ගමන් අලුත් නම UI එකට දැමීම
         const newFullName = profileData.full_name || 'Student';
         const newFirstName = profileData.first_name || newFullName;
 
@@ -261,7 +278,6 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
         setTimeout(() => { statusMsg.classList.add('hidden'); }, 3000);
     }
 });
-
 
 // ==========================================
 // G. Lesson Store & Automated Payments
