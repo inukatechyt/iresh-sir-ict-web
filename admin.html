@@ -135,11 +135,38 @@
                 </div>
             </section>
 
-            <!-- 3. Students Section -->
-            <section id="sec_students" class="page-section hidden">
-                <h3 class="text-2xl font-black mb-6">Student Manager</h3>
-                <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-sm border border-slate-200 dark:border-slate-800 text-center">
-                    <p class="text-slate-500">Student database will be loaded here...</p>
+            <!-- 3. Student Manager Section -->
+            <section id="sec_students" class="page-section hidden max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                    <h3 class="text-2xl font-black flex items-center text-slate-800 dark:text-white">
+                        <svg class="w-8 h-8 mr-3 text-primaryAdmin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        Student Manager
+                    </h3>
+                    
+                    <!-- Search Bar -->
+                    <div class="mt-4 md:mt-0 relative w-full md:w-80">
+                        <input type="text" id="searchStudentInput" placeholder="Search by ID or Name..." class="w-full p-4 pl-12 rounded-xl bg-white dark:bg-cardDark border border-slate-200 dark:border-slate-800 outline-none focus:border-primaryAdmin transition shadow-sm text-sm font-bold dark:text-white">
+                        <svg class="w-5 h-5 absolute left-4 top-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-cardDark rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-max">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-900/50 text-slate-500 border-b border-slate-200 dark:border-slate-800">
+                                    <th class="p-5 font-bold">Student ID</th>
+                                    <th class="p-5 font-bold">Full Name</th>
+                                    <th class="p-5 font-bold">Grade</th>
+                                    <th class="p-5 font-bold">WhatsApp Contact</th>
+                                    <th class="p-5 font-bold">Joined Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <tr><td colspan="5" class="text-center py-8 text-slate-500 font-bold">Loading students... ⏳</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 

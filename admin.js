@@ -122,6 +122,7 @@ async function checkAdminSession() {
     // දැන් Function එක උඩින් ඩිෆයින් කරලා තියෙන නිසා මේක හරියට වැඩ කරයි!
     loadPendingPayments(); 
     loadClassesDropdown();
+    loadStudentManager();
     
 }
 
@@ -270,3 +271,60 @@ document.getElementById('saveContentBtn')?.addEventListener('click', async () =>
         statusMsg.className = "font-bold text-sm text-red-500 block";
     }
 });
+
+// ==========================================
+// Student Manager Logic
+// ==========================================
+
+// ==========================================
+// Student Manager Logic
+// ==========================================
+
+async function loadStudentManager() {
+    const tbody = document.getElementById('studentsTableBody');
+    if(!tbody) return;
+
+    // 'profiles' වෙනුවට 'students' table එකෙන් ඩේටා අදිනවා
+    const { data, error } = await supabaseClient
+        .from('students')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-500 font-bold">Error loading students: ${error.message}</td></tr>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-500 font-bold">No students registered yet.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = '';
+    
+    data.forEach(student => {
+        const dateStr = new Date(student.created_at).toLocaleDateString();
+        const whatsapp = student.whatsapp_number || student.profWhatsapp || student.whatsapp || ''; // ඔයා සේව් කරපු නම අනුව
+        
+        // WhatsApp නම්බර් එකක් තියෙනවා නම්, ලින්ක් එකක් හදනවා
+        let wpLink = '<span class="text-slate-400 font-bold">N/A</span>';
+        if (whatsapp && whatsapp.length >= 9) {
+            const waFormat = whatsapp.startsWith('0') ? '94' + whatsapp.substring(1) : whatsapp;
+            wpLink = `<a href="https://wa.me/${waFormat}" target="_blank" class="text-green-500 hover:text-green-600 font-bold flex items-center bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg w-max transition">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z"></path></svg>
+                        ${whatsapp}
+                      </a>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = 'student-row border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/20 transition';
+        tr.innerHTML = `
+            <td class="p-5 text-sm font-black text-primaryAdmin student-id">${student.student_id || 'Not Set'}</td>
+            <td class="p-5 text-sm font-bold text-slate-800 dark:text-white student-name">${student.full_name || student.profFullName || 'Not Set'}</td>
+            <td class="p-5 text-sm font-bold text-slate-500">${student.grade || student.profGrade || 'Not Set'}</td>
+            <td class="p-5 text-sm">${wpLink}</td>
+            <td class="p-5 text-sm text-slate-500">${dateStr}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
