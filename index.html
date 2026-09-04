@@ -1,115 +1,143 @@
 <!DOCTYPE html>
-<html lang="si" class="dark">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iresh Sir - ICT</title>
-    
+    <title>Iresh Sir | Advanced Level ICT</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Noto+Sans+Sinhala:wght@400;600;800&display=swap" rel="stylesheet">
     
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primaryBlue: '#2563EB',
-                        darkBg: '#0F172A',
-                        lightBg: '#F8FAFC',
-                        cardDark: '#1E293B'
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300 overflow-x-hidden">
-
-    <nav class="p-5 flex justify-between items-center shadow-lg bg-white dark:bg-slate-900 sticky top-0 z-50">
-        <div class="text-2xl font-bold text-primaryBlue tracking-wider">
-            IRESH SIR <span class="text-slate-800 dark:text-white">ICT</span>
-        </div>
+    <style>
+        body { font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif; }
         
-        <div class="hidden md:flex gap-6 items-center">
-            <a href="#" class="hover:text-primaryBlue font-semibold transition">Home</a>
-            <a href="#features" class="hover:text-primaryBlue font-semibold transition">Why Us?</a>
-            <a href="#" class="hover:text-primaryBlue font-semibold transition">Time Table</a>
-            <a href="#" class="hover:text-primaryBlue font-semibold transition">Past Papers</a>
-            
-            <button id="themeToggle" class="p-2 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition">
-                🌓
-            </button>
-            
-            <button class="bg-primaryBlue hover:bg-blue-700 text-white px-6 py-2 rounded-full font-bold transition shadow-[0_0_15px_rgba(37,99,235,0.5)]">
-                LMS Login
-            </button>
-        </div>
+        /* Floating Animation for Tech Icons */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-float-delayed { animation: float 5s ease-in-out infinite; animation-delay: 2s; }
+        
+        /* Gradient Text */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #3b82f6, #8b5cf6);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
 
-        <div class="md:hidden flex items-center gap-4">
-            <button id="themeToggleMobile" class="p-2 rounded-full bg-slate-200 dark:bg-slate-700">🌓</button>
-            <button id="mobileMenuBtn" class="text-3xl text-slate-800 dark:text-white focus:outline-none">
-                ☰
-            </button>
+    <!-- 1. Glassmorphism Navbar -->
+    <nav class="fixed w-full z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg">
+                        I
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight">IRESH<span class="text-blue-600 dark:text-blue-500">DICT</span></span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center font-semibold text-slate-600 dark:text-slate-300">
+                    <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Home</a>
+                    <a href="#classes" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Classes</a>
+                    <a href="#features" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Why Us</a>
+                    <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Contact</a>
+                </div>
+
+                <!-- Auth Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="login.html" class="text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition">Log In</a>
+                    <a href="register.html" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full font-bold shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-0.5">
+                        Register Now
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button (Hamburger) -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-600 dark:text-slate-300 hover:text-blue-600 focus:outline-none">
+                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-slate-900 flex-col items-center py-5 space-y-4 shadow-lg absolute w-full z-40 transition-all duration-300">
-        <a href="#" class="text-lg font-semibold hover:text-primaryBlue">Home</a>
-        <a href="#features" class="text-lg font-semibold hover:text-primaryBlue">Why Us?</a>
-        <a href="#" class="text-lg font-semibold hover:text-primaryBlue">Time Table</a>
-        <button class="bg-primaryBlue text-white px-8 py-2 rounded-full font-bold w-3/4">LMS Login</button>
-    </div>
-
-    <header class="min-h-[80vh] flex flex-col justify-center items-center text-center p-5 md:p-10 relative overflow-hidden" data-aos="zoom-in" data-aos-duration="1000">
-        <div class="absolute top-10 left-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div class="absolute top-20 right-20 w-32 h-32 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-
-        <h1 class="text-4xl md:text-7xl font-extrabold mb-6 leading-tight">
-            Master ICT with the <br> <span class="text-primaryBlue">Best in the Field</span>
-        </h1>
-        <p class="text-lg md:text-2xl text-slate-600 dark:text-slate-400 max-w-2xl mb-10" data-aos="fade-up" data-aos-delay="200">
-            A/L සහ O/L ICT විෂය ඉතාමත් සරලව, ප්‍රායෝගිකව ඉගෙන ගෙන විශිෂ්ට සාමාර්ථයක් කරා පියනගන්න.
-        </p>
-        <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto px-5" data-aos="fade-up" data-aos-delay="400">
-            <button class="bg-primaryBlue hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-bold transition transform hover:-translate-y-1 shadow-lg w-full md:w-auto">
-                Join 2026 Batch
-            </button>
-            <button class="border-2 border-primaryBlue text-primaryBlue dark:text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-primaryBlue hover:text-white transition transform hover:-translate-y-1 w-full md:w-auto">
-                Explore LMS
-            </button>
-        </div>
-    </header>
-
-    <section id="features" class="py-20 px-5 md:px-20 bg-slate-50 dark:bg-slate-800/50">
-        <div class="text-center mb-16" data-aos="fade-up">
-            <h2 class="text-3xl md:text-5xl font-bold mb-4">ඇයි අපේ පන්තිය <span class="text-primaryBlue">විශේෂ වෙන්නේ?</span></h2>
-            <p class="text-slate-600 dark:text-slate-400">තාක්ෂණයෙන් පිරිපුන් නවීනතම ඉගෙනුම් අත්දැකීම</p>
+    <!-- 2. The Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <!-- Background Glow Effects -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-30 dark:opacity-20 pointer-events-none">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-3xl mix-blend-multiply"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white dark:bg-cardDark p-8 rounded-2xl shadow-lg hover:shadow-primaryBlue/20 transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 dark:border-slate-700" data-aos="fade-up" data-aos-delay="100">
-                <div class="text-4xl mb-4">📊</div>
-                <h3 class="text-xl font-bold mb-3">Study Tracker</h3>
-                <p class="text-slate-600 dark:text-slate-400">ඔබ දිනකට වැඩ කරන පැය ගණන සටහන් කර, ප්‍රස්ථාර මගින් ඔබේ ප්‍රගතිය බලාගන්න.</p>
-            </div>
-            <div class="bg-white dark:bg-cardDark p-8 rounded-2xl shadow-lg hover:shadow-primaryBlue/20 transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 dark:border-slate-700" data-aos="fade-up" data-aos-delay="200">
-                <div class="text-4xl mb-4">🎥</div>
-                <h3 class="text-xl font-bold mb-3">Smart LMS</h3>
-                <p class="text-slate-600 dark:text-slate-400">පාඩම් මගහැරුණාද? කලින් කරපු ඕනෑම පාඩමක් නැවත බලන්න, Tutes Download කරගන්න.</p>
-            </div>
-            <div class="bg-white dark:bg-cardDark p-8 rounded-2xl shadow-lg hover:shadow-primaryBlue/20 transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 dark:border-slate-700" data-aos="fade-up" data-aos-delay="300">
-                <div class="text-4xl mb-4">🔒</div>
-                <h3 class="text-xl font-bold mb-3">100% Security</h3>
-                <p class="text-slate-600 dark:text-slate-400">ඔබගේ දත්ත සහ Payment විස්තර ඉතාමත් සුරක්ෂිතව, ලෝකයේ නවීනතම තාක්ෂණයෙන් ආරක්ෂා කර ඇත.</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Left Side: Content -->
+                <div class="text-center lg:text-left">
+                    <div class="inline-block px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-semibold text-sm mb-6 border border-blue-200 dark:border-blue-800/50">
+                        ✨ 2024 / 2025 / 2026 A/L ICT
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 leading-tight">
+                        අනාගතය ජයගන්න, <br />
+                        <span class="text-gradient">නිවැරදිම ICT පාර</span>
+                    </h1>
+                    <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                        දිවයිනේ විශිෂ්ටතම තොරතුරු හා සන්නිවේදන තාක්ෂණය පාඨමාලාව. න්‍යායික, ප්‍රායෝගික සහ අනුමාන ප්‍රශ්න සමඟින් ඔබේ A සාමාර්ථය තහවුරු කරගන්න.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="register.html" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl shadow-blue-500/25 transition transform hover:scale-105 flex items-center justify-center gap-2">
+                            Start Learning Now
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                        </a>
+                        <a href="#demo" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 px-8 py-4 rounded-full font-bold text-lg transition flex items-center justify-center gap-2 shadow-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                            Watch Free Intro
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Side: Image & Floating Elements -->
+                <div class="relative mt-10 lg:mt-0 flex justify-center lg:justify-end">
+                    <!-- Main Image Placeholder (සර්ගේ ෆොටෝ එක දාන්න ඕන තැන) -->
+                    <div class="relative w-72 sm:w-96 h-96 sm:h-[500px] bg-gradient-to-b from-blue-500/20 to-purple-500/20 rounded-[3rem] border border-white/50 dark:border-slate-700/50 shadow-2xl overflow-visible flex items-end justify-center">
+                        
+                        <!-- 🔴 සර්ගේ ෆොටෝ එක මෙතනට දාන්න -->
+                        <!-- <img src="iresh-sir.png" alt="Iresh Sir" class="w-[120%] h-auto absolute bottom-0 drop-shadow-2xl z-10" /> -->
+                        
+                        <p class="text-slate-400 font-bold mb-10 z-0">Teacher Image Here</p>
+                    </div>
+
+                    <!-- Floating Tech Icons -->
+                    <div class="absolute top-10 left-0 lg:-left-10 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 animate-float z-20">
+                        <span class="text-3xl">🐍</span>
+                        <p class="text-xs font-bold mt-1 text-center">Python</p>
+                    </div>
+                    <div class="absolute bottom-20 -right-4 lg:-right-10 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 animate-float-delayed z-20">
+                        <span class="text-3xl">💾</span>
+                        <p class="text-xs font-bold mt-1 text-center">SQL</p>
+                    </div>
+                    <div class="absolute top-1/2 -left-6 bg-blue-600 text-white px-4 py-2 rounded-xl shadow-lg shadow-blue-500/30 animate-float font-bold text-sm z-20 flex items-center gap-2">
+                        <span class="relative flex h-3 w-3">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                        </span>
+                        Live Classes
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="script.js"></script>
-    <script src="dashboard.js"></script>
 </body>
 </html>
