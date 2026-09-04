@@ -124,6 +124,7 @@ async function checkAdminSession() {
     loadClassesDropdown();
     loadStudentManager();
     loadPendingPayments();
+    loadDashboardStats();
     
 }
 
@@ -334,6 +335,10 @@ async function loadStudentManager() {
 // Dashboard Analytics Logic
 // ==========================================
 
+// ==========================================
+// Dashboard Analytics Logic (Fixed & Bulletproof)
+// ==========================================
+
 async function loadDashboardStats() {
     const elStudents = document.getElementById('statStudents');
     const elPending = document.getElementById('statPending');
@@ -341,31 +346,50 @@ async function loadDashboardStats() {
 
     if (!elStudents || !elPending || !elRevenue) return;
 
-    // 1. සම්පූර්ණ සිසුන් ගණන ගැනීම
-    const { count: studentCount, error: err1 } = await supabaseClient
-        .from('students')
-        .select('*', { count: 'exact', head: true });
+    try {
+        // 1. සම්පූර්ණ සිසුන් ගණන
+        const { data: students, error: err1 } = await supabaseClient
+            .from('students')
+            .select('id');
         
-    if (!err1) elStudents.innerText = studentCount || 0;
+        if (err1) console.error("Students fetching error:", err1.message);
+        elStudents.innerText = students ? students.length : 0;
 
-    // 2. Pending තත්ත්වයේ ඇති Payments ගණන ගැනීම
-    const { count: pendingCount, error: err2 } = await supabaseClient
-        .from('payments')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'Pending');
+        // 2. Pending තත්ත්වයේ ඇති Payments ගණන
+        const { data: pending, error: err2 } = await supabaseClient
+            .from('payments')
+            .select('id')
+            .eq('status', 'Pending');
         
-    if (!err2) elPending.innerText = pendingCount || 0;
+        if (err2) console.error("Pending payments error:", err2.message);
+        elPending.innerText = pending ? pending.length : 0;
 
-    // 3. Approved Payments වලින් මුළු ආදායම ගණනය කිරීම
-    const { data: revenueData, error: err3 } = await supabaseClient
-        .from('payments')
-        .select('amount')
-        .eq('status', 'Approved');
+        // 3. Approved Payments වලින් මුළු ආදායම
+        const { data: revenueData, error: err3 } = await supabaseClient
+            .from('payments')
+            .select('amount')
+            .eq('status', 'Approved');
 
-    if (!err3 && revenueData) {
-        // ඔක්කොම ගණන් ටික එකතු කිරීම
-        const total = revenueData.reduce((sum, record) => sum + (Number(record.amount) || 0), 0);
-        // Rs. 2,500 වගේ ලස්සනට පෙන්වන්න toLocaleString() පාවිච්චි කරනවා
-        elRevenue.innerText = `Rs. ${total.toLocaleString()}`;
+        if (err3) {
+            console.error("Revenue fetching error:", err3.message);
+            elRevenue.innerText = "Rs. 0";
+        } else if (revenueData) {
+            // ඔක්කොම ගණන් ටික එකතු කිරීම
+            const total = revenueData.reduce((sum, record) => {
+                // සමහරවිට Rs. කියලා අකුරු තිබ්බොත් ඒවා අයින් කරලා ගණන් හදන්න
+                const amountCleaned = String(record.amount).replace(/[^0-9.-]+/g, ""); 
+                return sum + (Number(amountCleaned) || 0);
+            }, 0);
+            
+            elRevenue.innerText = `Rs. ${total.toLocaleString()}`;
+        } else {
+            elRevenue.innerText = "Rs. 0";
+        }
+
+    } catch (e) {
+        console.error("Analytics Error:", e);
+        elStudents.innerText = "Error";
+        elPending.innerText = "Error";
+        elRevenue.innerText = "Error";
     }
 }
