@@ -123,6 +123,7 @@ async function checkAdminSession() {
     loadPendingPayments(); 
     loadClassesDropdown();
     loadStudentManager();
+    loadPendingPayments();
     
 }
 
