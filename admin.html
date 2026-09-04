@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="si" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Iresh Sir ICT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primaryAdmin: '#8B5CF6', darkBg: '#0B1120', cardDark: '#1E293B' }, // දම් පාට තීම් එකක් (Purple)
+                    borderRadius: { '3xl': '1.5rem', '4xl': '2rem' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .nav-btn { transition: all 0.3s ease; }
+        .nav-btn.active { background-color: rgba(139, 92, 246, 0.1); color: #8B5CF6; font-weight: 800; border-right: 4px solid #8B5CF6; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden flex h-screen font-sans">
+
+    <!-- Mobile Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+    <!-- Admin Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 bg-white dark:bg-cardDark border-r border-slate-200 dark:border-slate-800/50 transition-all duration-300 flex flex-col transform -translate-x-full lg:translate-x-0 w-72">
+        <div class="flex items-center justify-between p-6 h-[88px] border-b border-slate-200 dark:border-slate-800/50">
+            <h1 class="text-2xl font-black text-primaryAdmin tracking-wider">ADMIN <span class="text-white">PANEL</span></h1>
+            <button id="closeSidebarBtn" class="lg:hidden text-slate-400 hover:text-white ml-auto">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <nav class="flex-1 py-6 space-y-2 overflow-y-auto overflow-x-hidden">
+            <a href="#" id="menu_overview" class="nav-btn active flex items-center p-4 mx-4 rounded-xl text-slate-500 font-semibold">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Overview
+            </a>
+            <a href="#" id="menu_payments" class="nav-btn flex items-center p-4 mx-4 rounded-xl text-slate-500 hover:text-slate-200 font-semibold">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Payment Approvals
+            </a>
+            <a href="#" id="menu_students" class="nav-btn flex items-center p-4 mx-4 rounded-xl text-slate-500 hover:text-slate-200 font-semibold">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Student Manager
+            </a>
+            <a href="#" id="menu_lessons" class="nav-btn flex items-center p-4 mx-4 rounded-xl text-slate-500 hover:text-slate-200 font-semibold">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                Lesson Manager
+            </a>
+        </nav>
+        <div class="p-6 border-t border-slate-200 dark:border-slate-800/50">
+            <button id="logoutBtn" class="w-full flex items-center justify-center p-3 rounded-xl bg-red-500/10 text-red-500 font-bold hover:bg-red-500 hover:text-white transition">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen bg-slate-50 dark:bg-darkBg">
+        
+        <!-- Premium Floating Topbar -->
+        <header class="m-4 md:m-6 p-4 px-6 bg-white dark:bg-cardDark rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50 flex items-center justify-between z-30 transition-all">
+            <div class="flex items-center">
+                <button id="openSidebarBtn" class="p-2 mr-4 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:text-primaryAdmin transition lg:hidden">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <h2 class="text-xl font-bold hidden sm:block">Control Center</h2>
+            </div>
+            <div class="flex items-center space-x-4">
+                <p class="text-sm font-bold text-slate-400">Logged in as: <span id="adminName" class="text-primaryAdmin">Loading...</span></p>
+                <div class="w-10 h-10 rounded-full bg-primaryAdmin/20 border-2 border-primaryAdmin flex items-center justify-center text-primaryAdmin font-bold">
+                    A
+                </div>
+            </div>
+        </header>
+
+        <!-- Pages Content -->
+        <main class="flex-1 overflow-y-auto px-4 md:px-6 pb-10">
+            
+            <!-- 1. Overview Section -->
+            <section id="sec_overview" class="page-section">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white dark:bg-cardDark p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
+                        <p class="text-slate-500 font-bold mb-2">Total Students</p>
+                        <h3 class="text-4xl font-black text-primaryAdmin">0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-cardDark p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
+                        <p class="text-slate-500 font-bold mb-2">Pending Payments</p>
+                        <h3 class="text-4xl font-black text-yellow-500">0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-cardDark p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
+                        <p class="text-slate-500 font-bold mb-2">Total Revenue</p>
+                        <h3 class="text-4xl font-black text-green-500">Rs. 0</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Payments Section -->
+            <section id="sec_payments" class="page-section hidden">
+                <h3 class="text-2xl font-black mb-6 flex items-center">
+                    <svg class="w-8 h-8 mr-3 text-primaryAdmin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Payment Approvals
+                </h3>
+                <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-sm border border-slate-200 dark:border-slate-800 text-center">
+                    <p class="text-slate-500">Payment table will be loaded here...</p>
+                </div>
+            </section>
+
+            <!-- 3. Students Section -->
+            <section id="sec_students" class="page-section hidden">
+                <h3 class="text-2xl font-black mb-6">Student Manager</h3>
+                <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-sm border border-slate-200 dark:border-slate-800 text-center">
+                    <p class="text-slate-500">Student database will be loaded here...</p>
+                </div>
+            </section>
+
+            <!-- 4. Lessons Section -->
+            <section id="sec_lessons" class="page-section hidden">
+                <h3 class="text-2xl font-black mb-6">Lesson Manager</h3>
+                <div class="bg-white dark:bg-cardDark p-8 rounded-4xl shadow-sm border border-slate-200 dark:border-slate-800 text-center">
+                    <p class="text-slate-500">Lesson upload form will be loaded here...</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
