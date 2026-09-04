@@ -195,84 +195,176 @@
         </div>
     </section>
 
-    <!-- 5. Available Classes (අපගේ පාඨමාලා) -->
+    <!-- 5. Institution Wise Timetable (පන්ති කාලසටහන) -->
     <section id="classes" class="py-24 bg-white dark:bg-slate-950">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Section Header -->
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
                 <div>
-                    <h2 class="text-blue-600 dark:text-blue-500 font-bold tracking-wide uppercase mb-3">Start Learning</h2>
-                    <h3 class="text-3xl md:text-4xl font-black">අලුතින් ආරම්භ වන පන්ති</h3>
+                    <h2 class="text-blue-600 dark:text-blue-500 font-bold tracking-wide uppercase mb-3">Timetable & Locations</h2>
+                    <h3 class="text-3xl md:text-4xl font-black">ආයතන සහ පන්ති කාලසටහන</h3>
                 </div>
-                <a href="register.html" class="text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-2">
-                    View All Classes 
+                <a href="register.html" class="text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-2 transition transform hover:translate-x-1">
+                    Register for a Class 
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Class 1 -->
-                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group">
+            <!-- 6 Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Card 1: CANTAB (Grade 6-11) -->
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group hover:shadow-2xl transition duration-300">
                     <div class="h-48 bg-gradient-to-br from-blue-500 to-cyan-500 relative overflow-hidden">
-                        <!-- Card Image placeholder -->
                         <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
-                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            🟢 Ongoing
+                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-sm">
+                            🏛️ Physical Class
                         </div>
                     </div>
                     <div class="p-8">
-                        <div class="text-sm text-blue-600 dark:text-blue-400 font-bold mb-2">2026 A/L</div>
-                        <h4 class="text-2xl font-black mb-4">2026 ICT Theory</h4>
-                        <div class="flex items-center gap-2 text-slate-500 text-sm mb-6">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            සෑම සෙනසුරාදාවකම රාත්‍රී 8:00
+                        <div class="text-sm text-blue-600 dark:text-blue-400 font-bold mb-2 uppercase tracking-wide">CANTAB - Ibbagamuwa</div>
+                        <h4 class="text-2xl font-black mb-4">Grade 6 සිට 11 දක්වා</h4>
+                        <div class="flex flex-col gap-3 text-slate-500 dark:text-slate-400 text-sm mb-6">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>6, 7, 8, 9 ශ්‍රේණි: සෙනසුරාදා උදෑසන 8:00 - 10:00</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>10, 11 ශ්‍රේණි: ඉරිදා උදෑසන 8:00 - 10:30</span>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between mt-4 pt-6 border-t border-slate-200 dark:border-slate-700">
-                            <div class="text-xl font-black text-slate-800 dark:text-white">Rs. 2,500 <span class="text-sm text-slate-500 font-normal">/ month</span></div>
-                            <a href="register.html" class="bg-slate-900 dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition">Enroll</a>
+                        <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <div class="text-sm font-bold text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-lg">Kurunegala</div>
+                            <a href="register.html" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition">Enroll Now</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Class 2 -->
-                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group">
+                <!-- Card 2: CANTAB (A/L) -->
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group hover:shadow-2xl transition duration-300">
                     <div class="h-48 bg-gradient-to-br from-purple-500 to-pink-500 relative overflow-hidden">
                         <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
-                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            🔥 Trending
+                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-sm">
+                            🏛️ Physical Class
                         </div>
                     </div>
                     <div class="p-8">
-                        <div class="text-sm text-purple-600 dark:text-purple-400 font-bold mb-2">2025 A/L</div>
-                        <h4 class="text-2xl font-black mb-4">2025 ICT Revision</h4>
-                        <div class="flex items-center gap-2 text-slate-500 text-sm mb-6">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            සෑම ඉරිදාවකම උදෑසන 8:00
+                        <div class="text-sm text-purple-600 dark:text-purple-400 font-bold mb-2 uppercase tracking-wide">CANTAB - Ibbagamuwa</div>
+                        <h4 class="text-2xl font-black mb-4">2026 A/L ICT Theory</h4>
+                        <div class="flex flex-col gap-3 text-slate-500 dark:text-slate-400 text-sm mb-6">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>සෑම අඟහරුවාදාවකම ප.ව 2:30 - 5:30</span>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between mt-4 pt-6 border-t border-slate-200 dark:border-slate-700">
-                            <div class="text-xl font-black text-slate-800 dark:text-white">Rs. 2,500 <span class="text-sm text-slate-500 font-normal">/ month</span></div>
-                            <a href="register.html" class="bg-slate-900 dark:bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition">Enroll</a>
+                        <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <div class="text-sm font-bold text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-lg">Kurunegala</div>
+                            <a href="register.html" class="bg-purple-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition">Enroll Now</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Class 3 -->
-                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group">
+                <!-- Card 3: Online (A/L Revision) -->
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group hover:shadow-2xl transition duration-300">
                     <div class="h-48 bg-gradient-to-br from-orange-500 to-red-500 relative overflow-hidden">
                         <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
-                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            ⭐ Paper Class
+                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-sm flex items-center gap-1">
+                            <span class="relative flex h-2 w-2 mr-1">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                            </span>
+                            Live Online
                         </div>
                     </div>
                     <div class="p-8">
-                        <div class="text-sm text-orange-600 dark:text-orange-400 font-bold mb-2">2024 A/L</div>
-                        <h4 class="text-2xl font-black mb-4">2024 Paper Class</h4>
-                        <div class="flex items-center gap-2 text-slate-500 text-sm mb-6">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            සෑම බ්‍රහස්පතින්දාවකම රාත්‍රී 7:30
+                        <div class="text-sm text-orange-600 dark:text-orange-400 font-bold mb-2 uppercase tracking-wide">All Island Online</div>
+                        <h4 class="text-2xl font-black mb-4">2025 A/L Revision</h4>
+                        <div class="flex flex-col gap-3 text-slate-500 dark:text-slate-400 text-sm mb-6">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>සෑම බ්‍රහස්පතින්දාවකම රාත්‍රී 8:00 - 11:00</span>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between mt-4 pt-6 border-t border-slate-200 dark:border-slate-700">
-                            <div class="text-xl font-black text-slate-800 dark:text-white">Rs. 2,000 <span class="text-sm text-slate-500 font-normal">/ month</span></div>
-                            <a href="register.html" class="bg-slate-900 dark:bg-orange-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-orange-700 transition">Enroll</a>
+                        <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <div class="text-sm font-bold text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-lg">Islandwide</div>
+                            <a href="register.html" class="bg-orange-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-orange-700 transition">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Kurunegala Town -->
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group hover:shadow-2xl transition duration-300">
+                    <div class="h-48 bg-gradient-to-br from-green-500 to-emerald-500 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
+                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-sm">
+                            🏛️ Physical Class
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="text-sm text-emerald-600 dark:text-emerald-400 font-bold mb-2 uppercase tracking-wide">Apex - Kurunegala</div>
+                        <h4 class="text-2xl font-black mb-4">2026 A/L ICT Theory</h4>
+                        <div class="flex flex-col gap-3 text-slate-500 dark:text-slate-400 text-sm mb-6">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>සෑම බදාදාවකම ප.ව 2:30 - 5:30</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <div class="text-sm font-bold text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-lg">Kurunegala</div>
+                            <a href="register.html" class="bg-emerald-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5: Online (Grade 10/11) -->
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group hover:shadow-2xl transition duration-300">
+                    <div class="h-48 bg-gradient-to-br from-pink-500 to-rose-500 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
+                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-sm flex items-center gap-1">
+                            <span class="relative flex h-2 w-2 mr-1">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                            </span>
+                            Live Online
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="text-sm text-rose-600 dark:text-rose-400 font-bold mb-2 uppercase tracking-wide">All Island Online</div>
+                        <h4 class="text-2xl font-black mb-4">O/L ICT (Grade 10/11)</h4>
+                        <div class="flex flex-col gap-3 text-slate-500 dark:text-slate-400 text-sm mb-6">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>සෑම සිකුරාදාවකම රාත්‍රී 7:30 - 9:30</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <div class="text-sm font-bold text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-lg">Islandwide</div>
+                            <a href="register.html" class="bg-rose-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-rose-700 transition">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6: Online Paper Class -->
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 group hover:shadow-2xl transition duration-300">
+                    <div class="h-48 bg-gradient-to-br from-indigo-500 to-blue-600 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
+                        <div class="absolute top-4 right-4 bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-sm flex items-center gap-1">
+                            <span class="text-yellow-600">⭐</span> Paper Class
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="text-sm text-indigo-600 dark:text-indigo-400 font-bold mb-2 uppercase tracking-wide">All Island Online</div>
+                        <h4 class="text-2xl font-black mb-4">2024 A/L Paper Class</h4>
+                        <div class="flex flex-col gap-3 text-slate-500 dark:text-slate-400 text-sm mb-6">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>සෑම සඳුදාවකම රාත්‍රී 8:00 - 11:00</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <div class="text-sm font-bold text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-lg">Islandwide</div>
+                            <a href="register.html" class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition">Enroll Now</a>
                         </div>
                     </div>
                 </div>
