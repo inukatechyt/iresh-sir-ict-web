@@ -268,8 +268,9 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
 // ==========================================
 
 // 1. Lesson Store එකට Database එකෙන් පන්ති ගෙන ඒම
+// 1. Lesson Store එකට Database එකෙන් පන්ති ගෙන ඒම (Filter පහසුකම සහිතව)
 async function loadLessonStore() {
-    const storeGrid = document.querySelector('#sec_lessonstore .grid');
+    const storeGrid = document.getElementById('storeGridItems'); // අලුත් Grid ID එක
     if(!storeGrid) return;
 
     storeGrid.innerHTML = '<p class="col-span-full text-center text-textGray font-bold text-lg">Loading classes... ⏳</p>';
@@ -293,8 +294,13 @@ async function loadLessonStore() {
 
     data.forEach(cls => {
         const card = document.createElement('div');
-        card.className = 'bg-white p-6 rounded-[2rem] shadow-card hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full border border-slate-50';
         
+        // 🔥 වෙනස මෙතනයි: 'class-card-item' කියන class එක එකතු කළා
+        card.className = 'class-card-item bg-white p-6 rounded-[2rem] shadow-card hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full border border-slate-50';
+        
+        // 🔥 වෙනස මෙතනයි: Filter එකට අඳුරගන්න මාතෘකාව (data-title) හැංගුවා
+        card.setAttribute('data-title', cls.title); 
+
         const imgHtml = cls.cover_image 
             ? `<img src="${cls.cover_image}" class="w-full h-48 object-cover rounded-2xl mb-6 shadow-sm border border-slate-100">`
             : `<div class="h-48 bg-bgLight rounded-2xl mb-6 flex items-center justify-center shadow-inner"><span class="text-textGray font-bold">No Cover Image</span></div>`;
