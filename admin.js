@@ -277,18 +277,17 @@ document.getElementById('saveContentBtn')?.addEventListener('click', async () =>
 // ==========================================
 
 // ==========================================
-// Student Manager Logic
+// Student Manager Logic (Fixed created_at error)
 // ==========================================
 
 async function loadStudentManager() {
     const tbody = document.getElementById('studentsTableBody');
     if(!tbody) return;
 
-    // 'profiles' වෙනුවට 'students' table එකෙන් ඩේටා අදිනවා
+    // order('created_at') කෑල්ල ඉවත් කර ඇත
     const { data, error } = await supabaseClient
         .from('students')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
 
     if (error) {
         tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-500 font-bold">Error loading students: ${error.message}</td></tr>`;
@@ -303,10 +302,10 @@ async function loadStudentManager() {
     tbody.innerHTML = '';
     
     data.forEach(student => {
-        const dateStr = new Date(student.created_at).toLocaleDateString();
-        const whatsapp = student.whatsapp_number || student.profWhatsapp || student.whatsapp || ''; // ඔයා සේව් කරපු නම අනුව
+        // created_at column එක තිබුණොත් දිනය දානවා, නැත්නම් 'N/A' දානවා
+        const dateStr = student.created_at ? new Date(student.created_at).toLocaleDateString() : 'N/A';
+        const whatsapp = student.whatsapp_number || student.profWhatsapp || student.whatsapp || student.whatsapp_no || ''; 
         
-        // WhatsApp නම්බර් එකක් තියෙනවා නම්, ලින්ක් එකක් හදනවා
         let wpLink = '<span class="text-slate-400 font-bold">N/A</span>';
         if (whatsapp && whatsapp.length >= 9) {
             const waFormat = whatsapp.startsWith('0') ? '94' + whatsapp.substring(1) : whatsapp;
