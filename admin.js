@@ -159,3 +159,66 @@ window.approvePayment = async function(paymentId) {
         loadPendingPayments(); // Table එක ආයෙත් Refresh කරනවා
     }
 }
+
+
+
+// ==========================================
+// Lesson Manager Logic (Add New Class)
+// ==========================================
+
+document.getElementById('saveClassBtn')?.addEventListener('click', async () => {
+    const title = document.getElementById('classTitle').value;
+    const desc = document.getElementById('classDesc').value;
+    const type = document.getElementById('classType').value;
+    const price = document.getElementById('classPrice').value;
+    const file = document.getElementById('classCover').files[0];
+
+    if (!title || !price || !file) {
+        alert("කරුණාකර මාතෘකාව, මිල සහ කවරයේ පින්තූරය අනිවාර්යයෙන් ඇතුළත් කරන්න!");
+        return;
+    }
+
+    const statusMsg = document.getElementById('classStatusMsg');
+    statusMsg.innerText = "Publishing Class... ⏳";
+    statusMsg.className = "font-bold text-sm text-primaryAdmin block";
+    statusMsg.classList.remove('hidden');
+
+    try {
+        // 1. Upload Cover Image to 'class_covers' bucket
+        const fileName = `class_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+        const { error: uploadError } = await supabaseClient.storage.from('class_covers').upload(fileName, file);
+        if (uploadError) throw uploadError;
+
+        // 2. Get the Public URL of the uploaded image
+        const { data: { publicUrl } } = supabaseClient.storage.from('class_covers').getPublicUrl(fileName);
+
+        // 3. Insert class details into Database
+        const { error: dbError } = await supabaseClient.from('classes').insert([
+            { 
+                title: title, 
+                description: desc, 
+                type: type, 
+                price: parseInt(price), 
+                cover_image: publicUrl 
+            }
+        ]);
+        
+        if (dbError) throw dbError;
+
+        statusMsg.innerText = "Class Published Successfully! 🎉";
+        statusMsg.className = "font-bold text-sm text-green-500 block";
+        
+        // Form එක Clear කිරීම
+        document.getElementById('classTitle').value = '';
+        document.getElementById('classDesc').value = '';
+        document.getElementById('classPrice').value = '';
+        document.getElementById('classCover').value = '';
+
+        setTimeout(() => { statusMsg.classList.add('hidden'); }, 4000);
+
+    } catch (error) {
+        console.error(error);
+        statusMsg.innerText = "Error publishing class! ❌";
+        statusMsg.className = "font-bold text-sm text-red-500 block";
+    }
+});
