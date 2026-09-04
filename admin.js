@@ -1,11 +1,8 @@
-// ==========================================
-// 1. SUPABASE CONNECTION FIX
-// ==========================================
+// නිවැරදිව supabaseClient නම පාවිච්චි කිරීම
 const SUPABASE_URL = 'https://ercowsldngxxzpvpevxa.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVyY293c2xkbmd4eHpwdnBldnhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNjA1NjksImV4cCI6MjEwMzkzNjU2OX0.BGFibu7_xRZUl9c2rkH3KA-y0kJsm8iCA2YLtnRwn9o';
 
-// නිවැරදිව Supabase Client එක සෑදීම
-const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ==========================================
 // 1. ADMIN CONFIG & SECURITY
 // ==========================================
@@ -30,13 +27,8 @@ async function loadPendingPayments() {
     tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 font-bold">Loading pending payments... ⏳</td></tr>`;
 
     try {
-        // Supabase variable name safety check
-        const client = window.supabaseClient || window.supabase;
-        if (!client) {
-            throw new Error("Supabase client is not initialized!");
-        }
-
-        const { data, error } = await client
+        // මෙතන client වෙනුවට කෙලින්ම supabaseClient පාවිච්චි කරයි
+        const { data, error } = await supabaseClient
             .from('payments')
             .select('*')
             .eq('status', 'Pending')
@@ -49,9 +41,34 @@ async function loadPendingPayments() {
         }
 
         if (!data || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 font-bold">No pending payments to approve. 🎉 (Database is empty or all approved)</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 font-bold">No pending payments to approve. 🎉</td></tr>`;
             return;
         }
+
+        tbody.innerHTML = '';
+        data.forEach(payment => {
+            const dateStr = new Date(payment.created_at).toLocaleString();
+            const tr = document.createElement('tr');
+            tr.className = 'border-b border-slate-800 hover:bg-slate-800/40 transition';
+            tr.innerHTML = `
+                <td class="py-4 px-4 text-sm font-bold text-white">${payment.payment_for || 'N/A'}</td>
+                <td class="py-4 px-4 text-sm font-bold text-green-400">Rs. ${payment.amount}</td>
+                <td class="py-4 px-4 text-sm text-slate-400">${dateStr}</td>
+                <td class="py-4 px-4 text-sm">
+                    <a href="${payment.slip_url}" target="_blank" class="text-purple-400 hover:underline font-bold flex items-center">View Slip ↗</a>
+                </td>
+                <td class="py-4 px-4 text-sm">
+                    <button onclick="approvePayment('${payment.id}', '${payment.user_id}', '${payment.class_id || ''}')" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition transform hover:scale-105">Approve</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (err) {
+        console.error("Catch Error:", err);
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-400 font-bold">Error: ${err.message}</td></tr>`;
+    }
+
 
         tbody.innerHTML = '';
         data.forEach(payment => {
