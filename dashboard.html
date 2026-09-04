@@ -319,6 +319,35 @@
                 }
             });
         });
+
+        // ==========================================
+// Security: Disable Right Click & Dev Tools
+// ==========================================
+
+// 1. Right Click (Context Menu) එක නැවැත්වීම
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// 2. F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C නැවැත්වීම
+document.addEventListener('keydown', function(e) {
+    // F12 Key
+    if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+    }
+    // Ctrl + Shift + I (Inspect) / J (Console) / C (Element Select)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+        e.preventDefault();
+    }
+    // Ctrl + U (View Source)
+    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+        e.preventDefault();
+    }
+    // Ctrl + S (Save Page)
+    if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+        e.preventDefault();
+    }
+});
     </script>
 
     <!-- Help / WhatsApp Contact Button -->
