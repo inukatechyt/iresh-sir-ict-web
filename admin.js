@@ -35,6 +35,7 @@ async function checkAdminSession() {
     document.getElementById('adminName').innerText = currentUser.user_metadata?.full_name || currentUser.email;
     
     // මෙතනින් යටට අපි පස්සේ දත්ත අදින Functions කෝල් කරනවා
+    loadPendingPayments();
 }
 
 checkAdminSession();
@@ -86,3 +87,75 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     await supabaseClient.auth.signOut();
     window.location.href = 'login.html';
 });
+
+// ==========================================
+// Payment Approvals Logic
+// ==========================================
+
+async function loadPendingPayments() {
+    const tbody = document.getElementById('pendingPaymentsTable');
+    if(!tbody) return;
+
+    // Database එකෙන් 'Pending' තත්ත්වයේ තියෙන Payments ඔක්කොම අදිනවා
+    const { data, error } = await supabaseClient
+        .from('payments')
+        .select('*')
+        .eq('status', 'Pending')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-500 font-bold">Error loading data: ${error.message}</td></tr>`;
+        return;
+    }
+
+    if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-500 font-bold">No pending payments to approve. 🎉</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = '';
+    
+    // හැම Payment එකක්ම Table Row එකක් විදිහට UI එකට දානවා
+    data.forEach(payment => {
+        // දිනය ලස්සනට හදාගන්නවා
+        const dateObj = new Date(payment.created_at);
+        const dateStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
+
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/20 transition';
+        tr.innerHTML = `
+            <td class="py-4 text-sm font-bold text-slate-800 dark:text-white">${payment.payment_for}</td>
+            <td class="py-4 text-sm font-bold text-green-600 dark:text-green-400">Rs. ${payment.amount}</td>
+            <td class="py-4 text-sm text-slate-500">${dateStr}</td>
+            <td class="py-4 text-sm">
+                <a href="${payment.slip_url}" target="_blank" class="text-primaryAdmin hover:underline font-bold flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    View Slip
+                </a>
+            </td>
+            <td class="py-4 text-sm">
+                <button onclick="approvePayment('${payment.id}')" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition transform hover:scale-105">Approve</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Approve බොත්තම එබුවම වැඩ කරන Function එක
+window.approvePayment = async function(paymentId) {
+    const confirmAction = confirm("Are you sure you want to approve this payment?");
+    if(!confirmAction) return;
+    
+    // Database එකේ Status එක 'Approved' කියලා වෙනස් කරනවා
+    const { error } = await supabaseClient
+        .from('payments')
+        .update({ status: 'Approved' })
+        .eq('id', paymentId);
+        
+    if(error) {
+        alert("Error approving payment! " + error.message);
+    } else {
+        alert("Payment Approved Successfully! ✅");
+        loadPendingPayments(); // Table එක ආයෙත් Refresh කරනවා
+    }
+}
