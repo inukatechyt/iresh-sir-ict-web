@@ -175,21 +175,17 @@ document.getElementById('uploadSlipBtn')?.addEventListener('click', async () => 
     }
 });
 
-
 // ==========================================
 // F. Profile Management Logic
 // ==========================================
 async function loadProfileData() {
     if (!currentUser) return;
 
-    // 1. Auth Data සෙට් කිරීම (මේක අනිවාර්යයෙන් වැඩ කරන්න ඕනේ)
     const emailField = document.getElementById('profEmail');
     if(emailField) emailField.value = currentUser.email || '';
     
     document.getElementById('profTopId').innerText = currentUser.user_metadata?.student_id || 'N/A';
-    document.getElementById('profTopName').innerText = currentUser.user_metadata?.full_name || 'Student';
 
-    // 2. Database එකෙන් දත්ත ගැනීම (maybeSingle මගින් අලුත් අයට එන error එක නවත්තනවා)
     const { data, error } = await supabaseClient
         .from('students')
         .select('*')
@@ -218,10 +214,26 @@ async function loadProfileData() {
         document.getElementById('profGuardianPhone').value = data.guardian_phone || '';
         document.getElementById('profAddress').value = data.address || '';
         
+        // 🔥 Database එකෙන් නම අරගෙන UI එක අප්ඩේට් කිරීම 🔥
+        const dbFullName = data.full_name || currentUser.user_metadata?.full_name || 'Student';
+        const dbFirstName = data.first_name || dbFullName;
+
+        document.getElementById('profTopName').innerText = dbFullName; // Profile එකේ ලොකු නම
+        document.getElementById('displayName').innerText = dbFirstName; // Topbar එකේ "Good Afternoon, Inuka!"
+
         if(data.grade) document.getElementById('profTopGrade').innerText = data.grade;
-        if(data.first_name) {
-            document.getElementById('profAvatarText').innerText = data.first_name.charAt(0).toUpperCase();
+        
+        if(dbFirstName) {
+            const firstLetter = dbFirstName.charAt(0).toUpperCase();
+            document.getElementById('profAvatarText').innerText = firstLetter;
+            const topAvatar = document.getElementById('topAvatarText');
+            if(topAvatar) topAvatar.innerText = firstLetter;
         }
+    } else {
+        // දත්ත නැත්නම් Sign Up වුණ නම පෙන්නනවා
+        const authName = currentUser.user_metadata?.full_name || 'Student';
+        document.getElementById('profTopName').innerText = authName;
+        document.getElementById('displayName').innerText = authName;
     }
 }
 
@@ -230,7 +242,8 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
 
     const statusMsg = document.getElementById('profStatusMsg');
     statusMsg.innerText = "Saving... ⏳";
-    statusMsg.className = "font-bold text-sm text-primaryBlue block";
+    statusMsg.className = "font-bold text-sm text-primaryBlue block mt-4";
+    statusMsg.classList.remove('hidden');
 
     const profileData = {
         user_id: currentUser.id,
@@ -259,13 +272,26 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
     if (error) {
         console.error(error);
         statusMsg.innerText = "Error saving profile! ❌";
-        statusMsg.className = "font-bold text-sm text-red-500 block";
+        statusMsg.className = "font-bold text-sm text-red-500 block mt-4";
     } else {
         statusMsg.innerText = "Profile Saved Successfully! ✅";
-        statusMsg.className = "font-bold text-sm text-green-500 block";
+        statusMsg.className = "font-bold text-sm text-green-600 block mt-4 bg-green-50 p-2 rounded-lg text-center";
         
+        // 🔥 Save කරපු ගමන් අලුත් නම UI එකට දැමීම 🔥
+        const newFullName = profileData.full_name || 'Student';
+        const newFirstName = profileData.first_name || newFullName;
+
+        document.getElementById('profTopName').innerText = newFullName;
+        document.getElementById('displayName').innerText = newFirstName;
+
         if(profileData.grade) document.getElementById('profTopGrade').innerText = profileData.grade;
-        if(profileData.first_name) document.getElementById('profAvatarText').innerText = profileData.first_name.charAt(0).toUpperCase();
+        
+        if(newFirstName) {
+            const newFirstLetter = newFirstName.charAt(0).toUpperCase();
+            document.getElementById('profAvatarText').innerText = newFirstLetter;
+            const topAvatar = document.getElementById('topAvatarText');
+            if(topAvatar) topAvatar.innerText = newFirstLetter;
+        }
         
         setTimeout(() => { statusMsg.classList.add('hidden'); }, 3000);
     }
