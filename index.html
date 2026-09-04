@@ -32,9 +32,82 @@
             -webkit-text-fill-color: transparent;
             background-image: linear-gradient(to right, #3b82f6, #8b5cf6);
         }
+
+        /* 1. Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0f172a; } /* Dark Slate */
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6); 
+            border-radius: 10px; 
+        }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #2563eb, #7c3aed); }
+
+        /* 2. Custom Cursor (Hide default cursor on desktop) */
+        @media (min-width: 768px) {
+            body { cursor: none; }
+            a, button, input { cursor: none; }
+        }
+
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background-color: #3b82f6;
+        }
+        
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            transition: width 0.2s ease-out, height 0.2s ease-out, background-color 0.2s ease-out;
+        }
+
+        /* Hover Effect Class */
+        .cursor-hover {
+            width: 60px !important; 
+            height: 60px !important; 
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: transparent;
+        }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+
+    <!-- 1. Scroll Progress Bar (උඩම පිරෙන නිල් පාට ඉර) -->
+    <div id="scrollProgress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600 z-[1000] w-0 transition-all duration-75"></div>
+
+    <!-- 2. Loading Screen (IreshDict + Inuka Tech Branding) -->
+    <div id="preloader" class="fixed inset-0 z-[2000] bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-700">
+        <!-- Spinner & IreshDict Text -->
+        <div class="relative flex items-center justify-center mb-6">
+            <div class="absolute inset-0 border-4 border-slate-800 border-t-blue-500 rounded-full w-24 h-24 animate-spin"></div>
+            <div class="text-3xl font-black text-white z-10 animate-pulse">I<span class="text-blue-500">D</span></div>
+        </div>
+        <h2 class="text-white text-2xl font-black tracking-widest uppercase">IRESH<span class="text-blue-500">DICT</span></h2>
+        <p class="text-slate-400 mt-2 text-sm tracking-wide">Initializing Smart LMS...</p>
+        
+        <!-- Inuka Tech Branding (අඩියේ) -->
+        <div class="absolute bottom-12 flex flex-col items-center animate-bounce">
+            <span class="text-slate-500 text-xs tracking-widest uppercase mb-1">Powered By</span>
+            <span class="font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 tracking-[0.2em]">INUKA TECH</span>
+        </div>
+    </div>
+
+    <!-- 3. Custom Cursor HTML -->
+    <div class="cursor-dot hidden md:block"></div>
+    <div class="cursor-outline hidden md:block"></div>
+
+    <!-- 4. Scroll To Top Button (වම් පැත්තේ යටින්) -->
+    <button id="scrollToTopBtn" class="fixed bottom-6 left-6 bg-slate-800 hover:bg-blue-600 text-white w-12 h-12 rounded-full shadow-2xl border border-slate-700 flex items-center justify-center transform translate-y-20 opacity-0 transition-all duration-300 z-50 group">
+        <svg class="w-6 h-6 group-hover:-translate-y-1 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+    </button>
+
 
     <!-- 1. Glassmorphism Navbar -->
     <nav class="fixed w-full z-50 backdrop-blur-lg bg-white/70 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-all duration-300">
@@ -548,6 +621,77 @@ document.addEventListener('keydown', function(e) {
             </div>
         </div>
     </footer>
+<!-- All Custom Animations Scripts -->
+    <script>
+        // 1. Loading Screen (Preloader) Logic
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            // තත්පර 1ක් Loading Screen එක පෙන්වා ඉවත් කිරීම
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 700);
+            }, 1000); 
+        });
 
+        // 2. Scroll Progress Bar & Scroll To Top Button
+        const scrollProgress = document.getElementById('scrollProgress');
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+        window.addEventListener('scroll', () => {
+            // Calculate progress
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            scrollProgress.style.width = scrollPercent + '%';
+
+            // Show/Hide Scroll to Top Button
+            if (scrollTop > 300) {
+                scrollToTopBtn.classList.remove('translate-y-20', 'opacity-0');
+            } else {
+                scrollToTopBtn.classList.add('translate-y-20', 'opacity-0');
+            }
+        });
+
+        // Click event for Scroll to Top
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 3. Custom Cursor Logic (Desktop Only)
+        if (window.innerWidth >= 768) {
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+
+                // Dot follows exactly
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+
+                // Outline follows with a smooth delay
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 150, fill: "forwards" });
+            });
+
+            // Hover effects on Links & Buttons
+            const interactables = document.querySelectorAll('a, button, input, select');
+            interactables.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorOutline.classList.add('cursor-hover');
+                    cursorDot.style.opacity = '0';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorOutline.classList.remove('cursor-hover');
+                    cursorDot.style.opacity = '1';
+                });
+            });
+        }
+    </script>
 </body>
 </html>
