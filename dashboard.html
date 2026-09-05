@@ -229,6 +229,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
                         <div><label class="block text-sm font-bold mb-3 text-textGray">Email Address</label><input type="email" id="profEmail" disabled class="w-full p-4 rounded-2xl bg-slate-50 border-none font-bold text-slate-400 cursor-not-allowed"></div>
                         <div><label class="block text-sm font-bold mb-3 text-textGray">Grade (Exam Year)</label>
+                            <!-- Medium Selection -->
+<div class="flex flex-col gap-2">
+    <label class="text-xs font-bold text-slate-400">Medium (මාධ්‍යය)</label>
+    <select id="profMedium" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
+        <option value="" disabled selected>Select Medium</option>
+        <option value="Sinhala">Sinhala Medium</option>
+        <option value="English">English Medium</option>
+    </select>
+</div>
                             <select id="profGrade" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20 appearance-none">
                                 <option value="">Select Grade</option>
                                 <option value="2025 A/L">2025 A/L</option><option value="2026 A/L">2026 A/L</option><option value="2027 A/L">2027 A/L</option><option value="Other">Other</option>
