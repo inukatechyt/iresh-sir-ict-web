@@ -226,26 +226,56 @@
                         <svg class="w-7 h-7 mr-3 text-primaryBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         My Profile
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
-                        <div><label class="block text-sm font-bold mb-3 text-textGray">Email Address</label><input type="email" id="profEmail" disabled class="w-full p-4 rounded-2xl bg-slate-50 border-none font-bold text-slate-400 cursor-not-allowed"></div>
-                        <div><label class="block text-sm font-bold mb-3 text-textGray">Grade (Exam Year)</label>
-                            <select id="profGrade" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20 appearance-none">
-                                <option value="">Select Grade</option>
-                                <option value="2025 A/L">2025 A/L</option><option value="2026 A/L">2026 A/L</option><option value="2027 A/L">2027 A/L</option><option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <!-- Medium Selection -->
-<div class="flex flex-col gap-2">
-    <label class="text-xs font-bold text-slate-400">Medium (මාධ්‍යය)</label>
-    <select id="profMedium" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
-        <option value="" disabled selected>Select Medium</option>
-        <option value="Sinhala">Sinhala Medium</option>
-        <option value="English">English Medium</option>
-    </select>
+                    <!-- Profile Form Grid (2 Columns) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    
+                 <!-- 1. Email Address -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-slate-400">Email Address</label>
+                    <input type="email" id="profEmail" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-500 cursor-not-allowed" disabled>
+                </div>
+
+                <!-- 2. Grade (Exam Year) -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-slate-400">Grade (Exam Year)</label>
+                    <select id="profGrade" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
+                    <option value="" disabled selected>Select Grade</option>
+                    <!-- ඔයාගේ Grade Options ටික මෙතන තියන්න -->
+                    <option value="2024 A/L">2024 A/L</option>
+                   <option value="2025 A/L">2025 A/L</option>
+                    <option value="2026 A/L">2026 A/L</option>
+                   </select>
+                    </div>
+
+    <!-- 3. First Name -->
+    <div class="flex flex-col gap-2">
+        <label class="text-xs font-bold text-slate-400">First Name</label>
+        <input type="text" id="profFirstName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
+    </div>
+
+    <!-- 4. Last Name -->
+    <div class="flex flex-col gap-2">
+        <label class="text-xs font-bold text-slate-400">Last Name</label>
+        <input type="text" id="profLastName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
+    </div>
+
+    <!-- 5. Medium -->
+    <div class="flex flex-col gap-2">
+        <label class="text-xs font-bold text-slate-400">Medium (මාධ්‍යය)</label>
+        <select id="profMedium" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
+            <option value="" disabled selected>Select Medium</option>
+            <option value="Sinhala">Sinhala Medium</option>
+            <option value="English">English Medium</option>
+        </select>
+    </div>
+
+    <!-- 6. Phone Number 1 -->
+    <div class="flex flex-col gap-2">
+        <label class="text-xs font-bold text-slate-400">Phone Number 1</label>
+        <input type="text" id="profPhone1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
+    </div>
+
 </div>
-                        <div class="md:col-span-2"><label class="block text-sm font-bold mb-3 text-textGray">Full Name</label><input type="text" id="profFullName" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
-                        <div><label class="block text-sm font-bold mb-3 text-textGray">First Name</label><input type="text" id="profFirstName" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
-                        <div><label class="block text-sm font-bold mb-3 text-textGray">Last Name</label><input type="text" id="profLastName" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
                         <div><label class="block text-sm font-bold mb-3 text-textGray">Phone Number 1</label><input type="tel" id="profPhone1" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
                         <div><label class="block text-sm font-bold mb-3 text-textGray">Phone Number 2</label><input type="tel" id="profPhone2" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
                         <div><label class="block text-sm font-bold mb-3 text-textGray">NIC Number</label><input type="text" id="profNic" class="w-full p-4 rounded-2xl bg-bgLight border-none font-bold text-textDark outline-none focus:ring-2 focus:ring-primaryBlue/20"></div>
