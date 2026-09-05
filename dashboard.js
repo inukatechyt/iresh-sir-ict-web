@@ -187,7 +187,9 @@ async function loadProfileData() {
         document.getElementById('profGuardianName').value = data.guardian_name || '';
         document.getElementById('profGuardianPhone').value = data.guardian_phone || '';
         document.getElementById('profAddress').value = data.address || '';
-        
+        document.getElementById('profGrade').value = data.grade || '';
+// මේ පේළිය අලුතින් එකතු කරන්න 👇
+        if(document.getElementById('profMedium')) document.getElementById('profMedium').value = data.medium || '';
         // UI එකේ නම සහ අවතਾਰය අප්ඩේට් කිරීම
         const dbFullName = data.full_name || currentUser.user_metadata?.full_name || 'Student';
         const dbFirstName = data.first_name || dbFullName;
