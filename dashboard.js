@@ -173,7 +173,7 @@ async function loadProfileData() {
 
     if (data) {
         document.getElementById('profGrade').value = data.grade || '';
-        document.getElementById('profFullName').value = data.full_name || '';
+        //document.getElementById('profFullName').value = data.full_name || '';
         document.getElementById('profFirstName').value = data.first_name || '';
         document.getElementById('profLastName').value = data.last_name || '';
         document.getElementById('profPhone1').value = data.phone_1 || '';
@@ -229,25 +229,33 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
     // UI එකේ දැනට තියෙන Student ID එක ලබාගැනීම
     const currentStudentId = document.getElementById('profTopId').innerText;
 
+    // 🔥 මෙන්න මේ විචල්‍යයන් (Variables) දෙක අනිවාර්යයෙන්ම මෙතන තියෙන්න ඕනේ 🔥
+    const firstNameInput = document.getElementById('profFirstName')?.value || '';
+    const lastNameInput = document.getElementById('profLastName')?.value || '';
+
     const profileData = {
         user_id: currentUser.id,
         student_id: (currentStudentId && currentStudentId !== 'N/A') ? currentStudentId : ('IRESHDICT' + Math.floor(100000 + Math.random() * 900000)),
-        grade: document.getElementById('profGrade').value,
+        grade: document.getElementById('profGrade')?.value || '',
+        medium: document.getElementById('profMedium')?.value || '',
+        
+        // Full Name එක ඉබේම හැදෙන්න
         full_name: firstNameInput + " " + lastNameInput, 
         first_name: firstNameInput,
         last_name: lastNameInput,
-        phone_1: document.getElementById('profPhone1').value,
-        phone_2: document.getElementById('profPhone2').value,
-        nic: document.getElementById('profNic').value,
-        medium: document.getElementById('profMedium')?.value || '',
-        whatsapp: document.getElementById('profWhatsapp').value,
-        dob: document.getElementById('profDob').value,
-        district: document.getElementById('profDistrict').value,
-        institute: document.getElementById('profInstitute').value,
-        school: document.getElementById('profSchool').value,
-        guardian_name: document.getElementById('profGuardianName').value,
-        guardian_phone: document.getElementById('profGuardianPhone').value,
-        address: document.getElementById('profAddress').value
+        
+        // අනිත් Fields (?.value දාලා තියෙන නිසා කොටුවක් නැතත් Error එන්නේ නෑ)
+        phone_1: document.getElementById('profPhone1')?.value || '',
+        phone_2: document.getElementById('profPhone2')?.value || '',
+        nic: document.getElementById('profNic')?.value || '',
+        whatsapp: document.getElementById('profWhatsapp')?.value || '',
+        dob: document.getElementById('profDob')?.value || '',
+        district: document.getElementById('profDistrict')?.value || '',
+        institute: document.getElementById('profInstitute')?.value || '',
+        school: document.getElementById('profSchool')?.value || '',
+        guardian_name: document.getElementById('profGuardianName')?.value || '',
+        guardian_phone: document.getElementById('profGuardianPhone')?.value || '',
+        address: document.getElementById('profAddress')?.value || ''
     };
 
     const { error } = await supabaseClient
@@ -266,12 +274,14 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
         const newFullName = profileData.full_name || 'Student';
         const newFirstName = profileData.first_name || newFullName;
 
-        document.getElementById('profTopName').innerText = newFullName;
-        document.getElementById('displayName').innerText = newFirstName;
+        if(document.getElementById('profTopName')) document.getElementById('profTopName').innerText = newFullName;
+        if(document.getElementById('displayName')) document.getElementById('displayName').innerText = newFirstName;
 
-        if(profileData.grade) document.getElementById('profTopGrade').innerText = profileData.grade;
+        if(profileData.grade && document.getElementById('profTopGrade')) {
+            document.getElementById('profTopGrade').innerText = profileData.grade;
+        }
         
-        if(newFirstName) {
+        if(newFirstName && document.getElementById('profAvatarText')) {
             const newFirstLetter = newFirstName.charAt(0).toUpperCase();
             document.getElementById('profAvatarText').innerText = newFirstLetter;
             const topAvatar = document.getElementById('topAvatarText');
