@@ -84,11 +84,13 @@
 
     <!-- 2. Loading Screen (IreshDict + Inuka Tech Branding) -->
     <div id="preloader" class="fixed inset-0 z-[2000] bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-700">
-        <!-- Spinner & IreshDict Text -->
-        <div class="relative flex items-center justify-center mb-6">
-            <div class="absolute inset-0 border-4 border-slate-800 border-t-blue-500 rounded-full w-24 h-24 animate-spin"></div>
-            <div class="text-3xl font-black text-white z-10 animate-pulse">I<span class="text-blue-500">D</span></div>
+        
+        <!-- Spinner & IreshDict Text (Fixed Alignment) -->
+        <div class="relative flex items-center justify-center w-24 h-24 mb-6">
+            <div class="absolute inset-0 border-4 border-slate-800 border-t-blue-500 rounded-full animate-spin"></div>
+            <div class="text-3xl font-black text-white z-10 animate-pulse mt-1">I<span class="text-blue-500">D</span></div>
         </div>
+        
         <h2 class="text-white text-2xl font-black tracking-widest uppercase">IRESH<span class="text-blue-500">DICT</span></h2>
         <p class="text-slate-400 mt-2 text-sm tracking-wide">Initializing Smart LMS...</p>
         
