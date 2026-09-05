@@ -239,6 +239,7 @@ document.getElementById('profSaveBtn')?.addEventListener('click', async () => {
         phone_1: document.getElementById('profPhone1').value,
         phone_2: document.getElementById('profPhone2').value,
         nic: document.getElementById('profNic').value,
+        medium: document.getElementById('profMedium')?.value || '',
         whatsapp: document.getElementById('profWhatsapp').value,
         dob: document.getElementById('profDob').value,
         district: document.getElementById('profDistrict').value,
